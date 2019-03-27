@@ -32,3 +32,4 @@ Hence:
 1. Allow setting of automatic records (ie salary, fixed expense);
 1. Alert for credit card/bill payment;
 1. Calculation of simple/compound interest stored in bank account.
+1. Help the user to calculate the tax he needs to pay.
