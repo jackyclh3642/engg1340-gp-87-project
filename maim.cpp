@@ -239,7 +239,7 @@ void end_of_function(bool &processing){
     processing = false;
 }//function 6
 
-void(date* head){
+void function_stage(date* head){
     processing = true;
     date *current_date = head;
     while(processing){
@@ -308,5 +308,6 @@ int main(){
     date* head = nullptr;
     int year;
     initialize_the_calander(head, year);
+    function_stage(head)
 }
 
