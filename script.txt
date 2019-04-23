@@ -3,7 +3,7 @@ initalize calander
 	|
 	v
     function
-    	|
+   	|
 	|
 	v
 end of the year and
@@ -46,4 +46,14 @@ move to next day
 End_of_year 
 to end the function process
 
+--------------------
+resident
+1. linked list should be used 
+[v used to make a calander]
+2.dynamic array should be used
+(should we make a dynmaic array for checking? e.g. wheb user cheeck Sunday make an dynamic array to sort all the address of sunday date)
+3. iomanip setw setprecious
+4. File I/O
 
+others:
+i think the programme should be forced to start with the first of the year. 
