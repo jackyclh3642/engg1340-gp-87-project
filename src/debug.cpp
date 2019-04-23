@@ -1,9 +1,11 @@
 #include <iostream>
 #include "date.h"
+#include "database.h"
 
 using namespace std;
 
 int main(){
+    /** Testing for date.h
     cout<<"Please input day, month and year:"<<endl;
     Date d;
     cin >> d;
@@ -14,5 +16,6 @@ int main(){
     cout << d << " and " << d2 << " are " << (d==d2 ?"the same":"different")
         << endl;
     cout << d << (d < d2 ? "<" : (d > d2 ? ">" : "==")) << d2 << endl;
+    **/
     return 0;
 }
