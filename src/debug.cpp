@@ -1,26 +1,18 @@
 #include <iostream>
-#include "calendar.h"
-#include "database.h"
+#include "date.h"
 
 using namespace std;
 
-int main() {
-    Date d = {23, 4, 2019};
-    // Assert Tuesday
-    cout << ReturnWeekdayString(d) << endl;
-    Date i_d = {31, 4, 2019};
-    // Assert illegal Date
-    cout << IsLegalDate(i_d) << endl;
-    Date d_2 = {23, 4, 2019};
-    // Assert same Date
-    cout << IsSameDates(d, d_2) << endl;
-    Date d_3 = {1, 1, 1900};
-    // Assert 01/01/2019
-    cout << FormatDateString(d_3) << endl;
-    
-    cout << AIsEarlierThanB(d, d_3) << endl;
-    
-    RecordDatabase db = InitEmptyDatabase(50);
-    
+int main(){
+    cout<<"Please input day, month and year:"<<endl;
+    Date d;
+    cin >> d;
+    cout << d << " is a " << d.WeekdayString() << endl;
+    cout<<"Please input day, month and year:"<<endl;
+    Date d2;
+    cin >> d2;
+    cout << d << " and " << d2 << " are " << (d==d2 ?"the same":"different")
+        << endl;
+    cout << d << (d < d2 ? "<" : (d > d2 ? ">" : "==")) << d2 << endl;
     return 0;
 }
