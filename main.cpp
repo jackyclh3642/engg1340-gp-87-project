@@ -164,6 +164,60 @@ void initialize_the_calander(date* &head, int year){
             temp = q;
         }
 }
+//the above is the initial process
+void end_of_the_day(date* &current){
+    char input;
+    cout<<"Are you sure end of today? Y/N";
+    cout<<"Input Y for YES and N for No";
+    while(true){
+        cin>>input;
+        if (input == 'Y'){
+            current = current->next;
+            return;
+        }
+        else if(input == 'N'){
+            current = current;
+            return;
+        }
+        else{
+            cout<<"Invaid character input, please input again!";
+        }
+    }
+}
+
+
+void(date* head){
+    processing = true;
+    date *current_date = head;
+    while(processing){
+        cout<<"Choice the following function";
+        cout<<"Input 1 for  expenses";
+        cout<<"Input 2 for  revenue";
+        cout<<"Input 3 for  automaic setting";
+        cout<<"Input 4 for  edit past record";
+        cout<<"Input 5 for  end_of_the_day";
+        cout<<"Input 6 for  end_of_function";
+        int i;
+        cin>>i;
+        switch(i){
+            case(1):
+                    break;
+            case(2):
+                    break;
+            case(3):
+                    break;
+            case(4):
+                    break;
+            case(5):
+                    break;
+            case(6):
+                    processing = false;
+        }
+
+
+    }
+}
+//meanwhile the above is function process
 struct expenses{
         double entertainment;
         double transportation;
