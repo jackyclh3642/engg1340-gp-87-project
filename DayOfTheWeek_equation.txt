@@ -1,4 +1,0 @@
-N = day + 2month + 3(month+1) / 5 + year + year/4 + year/100 + year/400 + 2
-
-N mod 7 - 1 = the day of the week
-
