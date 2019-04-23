@@ -169,6 +169,7 @@ void edit_past_record(date* head){
     cout<<"e.g. for 7thApril please input 7 April"
     int day;
     string month;
+    cin>>day>>month;
     date *target = head;
     while(true){
         if (day == 0 && month == "None"){
@@ -191,10 +192,11 @@ void edit_past_record(date* head){
                 break;
             }
     }//end for seraching the date need to edit
-    cout<<"What information you want to edit?"<<end;
-    cout<<"Input 1 for expenditure, Input 2 for revenue, Input 0 for end the edition";
     int input;
     while(true){
+        cout<<"What information you want to edit?"<<end;
+        cout<<"Input 1 for expenditure, Input 2 for revenue"<<endl;
+        cout<<"Input 0 for end the edition"<<endl;
         cin>>input;
         if(input == 1){
             expenditure //(expenditure function)
@@ -248,8 +250,9 @@ void(date* head){
         cout<<"Input 2 for  revenue";
         cout<<"Input 3 for  automaic setting";
         cout<<"Input 4 for  edit past record";
-        cout<<"Input 5 for  end_of_the_day";
-        cout<<"Input 6 for  end_of_function";
+        cout<<"Input 5 for  check for account"
+        cout<<"Input 6 for  end_of_the_day";
+        cout<<"Input 7 for  end_of_function";
         int i;
         cin>>i;
         switch(i){
@@ -258,14 +261,18 @@ void(date* head){
             case(2):
                     break;
             case(3):
-                    break;
-            case(4):
                     
                     break;
+            case(4):
+                    edit_past_record(head);
+                    break;
             case(5):
-                    end_of_the_day(current)
+                    check_for_account(head, current);
                     break;
             case(6):
+                    end_of_the_day(current);
+                    break;
+            case(7):
                     end_of_function(processing);
                     break;
             default:
