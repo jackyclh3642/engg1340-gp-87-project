@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 
@@ -165,6 +164,52 @@ void initialize_the_calander(date* &head, int year){
         }
 }
 //the above is the initial process
+void edit_past_record(date* head){
+    cout<<"Please input the date you want to edit in DD/MM"<<endl;
+    cout<<"e.g. for 7thApril please input 7 April"
+    int day;
+    string month;
+    date *target = head;
+    while(true){
+        if (day == 0 && month == "None"){
+            return;
+        }
+        else{
+            while(target-> next != nullptr){
+                if(target->date == day)
+                    if(target->month == month)
+                        break;
+                else
+                    target = target->next;
+            }
+            if (target == nullptr){
+                cout<<"Invalid date is input, please enter again";
+                cin>>day>>month;
+                target = head; 
+            }
+            else
+                break;
+            }
+    }//end for seraching the date need to edit
+    cout<<"What information you want to edit?"<<end;
+    cout<<"Input 1 for expenditure, Input 2 for revenue, Input 0 for end the edition";
+    int input;
+    while(true){
+        cin>>input;
+        if(input == 1){
+            expenditure //(expenditure function)
+        }
+        else if (input == 2){
+            revenue //(revenue function)
+        }
+        else if (input == 0){
+            return;
+        }
+        else{
+            cout<<"Invaid number is input please input again";
+        }
+    }
+}//function 4 (not yet done)
 void end_of_the_day(date* &current){
     char input;
     cout<<"Are you sure end of today? Y/N";
@@ -172,8 +217,14 @@ void end_of_the_day(date* &current){
     while(true){
         cin>>input;
         if (input == 'Y'){
-            current = current->next;
-            return;
+            if(current->next = nullptr){
+                current = current;
+                return;
+            }
+            else{
+                current = current->next;
+                return;
+            }
         }
         else if(input == 'N'){
             current = current;
@@ -183,8 +234,10 @@ void end_of_the_day(date* &current){
             cout<<"Invaid character input, please input again!";
         }
     }
-}
-
+}//function 5
+void end_of_function(bool &processing){
+    processing = false;
+}//function 6
 
 void(date* head){
     processing = true;
@@ -207,11 +260,16 @@ void(date* head){
             case(3):
                     break;
             case(4):
+                    
                     break;
             case(5):
+                    end_of_the_day(current)
                     break;
             case(6):
-                    processing = false;
+                    end_of_function(processing);
+                    break;
+            default:
+                    cout<<"Invalid number input";
         }
 
 
@@ -246,8 +304,17 @@ struct date{
         struct expenditure MINUS;
         struct date* next;
 }
+struct account{
+    double cash_account;
+    double credit_account;
+    double stocks_account;
+    double saving_account;
+}
 int main(){
     date* head = nullptr;
     int year;
     initialize_the_calander(head, year);
 }
+
+
+
