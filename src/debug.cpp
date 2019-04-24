@@ -21,8 +21,10 @@ int main(){
     
     DaysDatabase dd;
     dd.InitDatabase(2019);
+    /** Test for valid dates
     for (int i = 0; i < dd.size; i++){
-        cout << dd.days[i].date << " ";
+        cout << dd.days[i].date.Formatted() << " ";
     }
+    **/
     return 0;
 }

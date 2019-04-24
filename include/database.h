@@ -45,9 +45,13 @@ struct Entry{
         return true;
      }
      
+     /**
+      * Output presentable string
+      */
      std::string FormattedString(){
          std::string r;
-         r += std::to_string(account) + ' ' + std::to_string(category) + ' ' + ;
+         r += "holder";
+         return r;
      }
 };
 
@@ -103,12 +107,12 @@ struct DaysDatabase{
     * Remove all memory used by the database
     */
     void FreeDatabaseMemory(){
-	// Remove the dynamic list under each days
-	for(int i = 0; i < size; i++){
-		delete [] days[i].transactions;
-	}
-	// Remove the database's days dynamic itself
-	delete[] days;
+    	// Remove the dynamic list under each days
+    	for(int i = 0; i < size; i++){
+    		delete [] days[i].transactions;
+    	}
+    	// Remove the database's days dynamic itself
+    	delete[] days;
 	}
 };
 

@@ -46,6 +46,17 @@ struct Date {
             return false;
         return true;
     }
+    
+    /**
+    * Output presentable string
+    */
+    std::string Formatted(){
+        std::string r;
+        r += (day < 10 ? "0" : "")  + std::to_string(day) + '/' +
+            (month < 10 ? "0" : "") + std::to_string(month) + '/' + 
+            std::to_string(year);
+        return r;
+    }
 };
 
 std::istream& operator >> (std::istream& is, Date& d);

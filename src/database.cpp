@@ -12,4 +12,6 @@ istream& operator >> (istream& is, Entry& e){
 }
 
 ostream& operator << (ostream& os, const Entry& e){
+    os << e.account << e.category << e.amount << endl << e.remarks;
+    return os;
 }

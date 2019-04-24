@@ -29,8 +29,7 @@ istream& operator >> (istream& is, Date& d){
 
 ostream& operator << (ostream& os, const Date& d){
     // Treat the struct as dd/mm/yyyy when needed output
-    os << setw(2) << setfill('0') << d.day << '/' << setw(2) << setfill('0')
-        << d.month << '/' << d.year;
+    os << d.day << " " << d.month << " " << d.year;
     return os;
 }
 
