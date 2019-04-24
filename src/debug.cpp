@@ -34,7 +34,9 @@ int main(){
     cin >> d;
     cout << "It is the " << dd.FindDateIndex(d, 0, dd.size) << " day of " << d.year << endl;
     **/
-    dd.days[0] << trans;
-    cout << dd.days[0].Formatted() << endl;
+    Date d;
+    cin >> d;
+    dd.FindDateRecords(d) << trans;
+    cout << dd.FindDateRecords(d).Formatted() << endl;
     return 0;
 }

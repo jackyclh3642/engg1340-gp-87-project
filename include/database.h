@@ -160,6 +160,13 @@ struct DaysDatabase{
             return -1;
         return FindDateIndex(d, d < d_2 ? lower : mid, d > d_2 ? higher : mid);
 	}
+	
+	/*
+	* Return the DayRecords for manipulation by date, assume legit date
+	*/
+	DayRecords& FindDateRecords(Date d){
+	    return days[FindDateIndex(d, 0, size)];
+	}
 };
 
 #endif
