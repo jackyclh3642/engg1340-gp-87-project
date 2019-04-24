@@ -28,6 +28,6 @@ int main(){
     **/
     Entry trans;
     cin >> trans;
-    cout << trans << endl;
+    cout << trans.Formatted() << endl;
     return 0;
 }

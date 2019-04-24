@@ -2,6 +2,7 @@
 #define DATABASE_H
 
 #include <string>
+#include <iomanip>
 #include "date.h"
 #include "variables.h"
 
@@ -49,9 +50,10 @@ struct Entry{
      /**
       * Output presentable string
       */
-     std::string FormattedString(){
+     std::string Formatted(){
          std::string r;
-         r += "holder";
+         r += kAccountStrings[account] + " | " + kCatagoryStrings[category] +
+            " | " + std::to_string(amount) + " | " + remarks;
          return r;
      }
 };
