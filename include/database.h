@@ -71,6 +71,9 @@ struct DaysDatabase{
     DayRecords *days;
     int size;
     
+    /*
+    * Init the year database depends on the year
+    */
     void InitDatabase(int year){
         size = (IsLeapYear(year) ? 366 : 365);
         days = new DayRecords[size];
@@ -85,6 +88,18 @@ struct DaysDatabase{
             }
         }
     }
+
+    /*
+    * Remove all memory used by the database
+    */
+    void FreeDatabaseMemory(){
+	// Remove the dynamic list under each days
+	for(int i = 0; i < size; i++){
+		delete [] days[i].transactions;
+	}
+	// Remove the database's days dynamic itself
+	delete[] days;
+	}
 };
 
 #endif
