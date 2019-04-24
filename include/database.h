@@ -185,6 +185,27 @@ struct EnquiryResults{
             ss << std::setw(kIndexLength) << size << " | " << results[size-1].Formatted();
         return ss.str();
     }
+    
+    /**
+     * Sum up all the amount of the enquiry entries
+     */
+    double Sum(){
+        double sum = 0;
+        for (int i = 0; i < size; i++){
+            sum += results[i].record->amount;
+        }
+        return sum;
+    }
+    
+    /**
+     * Return an entry by index for editing
+     */
+     
+     
+    Entry& operator[] (const int index){
+        std::cout << results[index-1].record << std::endl;
+        return *(results[index-1].record);
+    }
 };
 
 EnquiryResults& operator << (EnquiryResults& er, const EnquiryEntry& e);

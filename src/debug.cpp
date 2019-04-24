@@ -58,15 +58,25 @@ int main(){
     Date start = {1, 1, 2019};
     Date end = {1, 12, 2019};
     dd.InitDatabase(2019);
-    for (int i = 0; i < 5; i++){
+    for (int i = 0; i < 2; i++){
         Date d;
-        cout << "Input a date:";
+        cout << "Input a date:" << endl;
         cin >> d;
-        cout << "Input a entry";
+        cout << "Input a entry:" << endl;
         Entry e;
         cin >> e;
         dd.FindDateRecords(d) << e;
     }
     Enquiry all = {start, end, -1, -1, -1, ""};
-    cout << dd.IquireFor(all).Formatted() << endl;
+    EnquiryResults er = dd.IquireFor(all);
+    cout << er.Formatted() << endl;
+    cout << "Input a changing index:" << endl;
+    int index;
+    cin >> index;
+    Entry &editing = er[index];
+    cout << &editing << endl;
+    cout << "Editing:" << endl << editing.Formatted() << endl;
+    cin >> editing;
+    er = dd.IquireFor(all);
+    cout << er.Formatted() << endl;
 }
