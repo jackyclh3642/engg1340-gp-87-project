@@ -3,6 +3,7 @@
 
 #include <string>
 #include "date.h"
+#include "variables.h"
 
 /**
  * Holds a mult-condition enquiry

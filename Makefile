@@ -1,6 +1,6 @@
 OPTIONS = --pedantic-errors --std=c++11 -Iinclude
 
-build/database.o: src/database.cpp include/database.h include/date.h
+build/database.o: src/database.cpp include/database.h include/date.h include/variables.h
 	g++ $(OPTIONS) -c $< -o $@
 
 build/date.o: src/date.cpp include/date.h

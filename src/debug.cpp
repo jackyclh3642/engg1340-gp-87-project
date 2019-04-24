@@ -26,5 +26,8 @@ int main(){
         cout << dd.days[i].date.Formatted() << " ";
     }
     **/
+    Entry trans;
+    cin >> trans;
+    cout << trans << endl;
     return 0;
 }

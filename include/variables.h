@@ -3,13 +3,13 @@
 
 #include <string>
 
-const string kAccountStrings[] = {
+const std::string kAccountStrings[] = {
     "Cash",
     "Bank Card",
     "Credit Card"
 };
 
-const string kCatagoryStrings = {
+const std::string kCatagoryStrings[] = {
     "Other Income",
     "Other Expense"
 };
