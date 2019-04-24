@@ -24,6 +24,5 @@ int main(){
     for (int i = 0; i < dd.size; i++){
         cout << dd.days[i].date << " ";
     }
-    
     return 0;
 }

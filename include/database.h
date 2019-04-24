@@ -44,7 +44,15 @@ struct Entry{
                 return false;
         return true;
      }
+     
+     std::string FormattedString(){
+         std::string r;
+         r += std::to_string(account) + ' ' + std::to_string(category) + ' ' + ;
+     }
 };
+
+std::istream& operator >> (std::istream& is, Entry& e);
+std::ostream& operator << (std::ostream& os, const Entry& e);
 
 /**
  * Hold all entries within a given day in a dynamic list

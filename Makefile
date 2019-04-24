@@ -9,7 +9,10 @@ build/date.o: src/date.cpp include/date.h
 build/debug.o: src/debug.cpp include/date.h
 	g++ $(OPTIONS) -c $< -o $@
 	
-debug: build/debug.o build/date.o build/database.o
+build/variables.o: src/variables.cpp include/variables.h
+	g++ $(OPTIONS) -c $< -o $@
+	
+debug: build/debug.o build/date.o build/database.o build/variables.o
 	g++ $(OPTIONS) $^ -o build/debug.out
 	./build/debug.out
 	
