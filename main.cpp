@@ -123,7 +123,7 @@ int main(){
 	cout<<"e.g. for 1st May 1999, please input 1 5 1999"<<endl;
 	cin>>input_date;
 	today = FindDateIndex(input_date, 0, map.size);
-	initalize_the_database(DaysDatabase maps, int year);
+	initalize_the_database(map, year);
 	int input;
 	bool processing = true;
 	while(processing){
