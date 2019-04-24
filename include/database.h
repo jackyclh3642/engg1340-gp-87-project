@@ -118,6 +118,20 @@ struct DaysDatabase{
     	// Remove the database's days dynamic itself
     	delete[] days;
 	}
+	
+	/*
+	* Return the index of the date in the database, -1 if not found
+	* Since days is a sorted dynamic list, binear search is used
+	*/
+	int FindDateIndex(Date d, int lower, int higher){
+	    int mid = (lower + higher)/2;
+	    Date d_2 = days[mid].date;
+	    if (d_2 == d)
+	        return mid;
+        if (mid == lower)
+            return -1;
+        return FindDateIndex(d, d < d_2 ? lower : mid, d > d_2 ? higher : mid);
+	}
 };
 
 #endif
