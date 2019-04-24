@@ -8,14 +8,14 @@
  * Holds a mult-condition enquiry
  */
 struct Enquiry{
-    Date date;
+    Date start_date;
+    // The start and end date are both inclusive
+    Date end_date;
     int account;
     int category;
     int is_income;
     std::string search_string;
 };
-
-
 
 /**
  * Hold the metadata of each singular entry
@@ -62,7 +62,21 @@ struct DayRecords{
 struct DaysDatabase{
     DayRecords *days;
     int size;
-    int max_size;
+    
+    void InitDatabase(int year){
+        size = (IsLeapYear(year) ? 366 : 365);
+        days = new DayRecords[size];
+        
+        Date head = {1, 1, year};
+        for (int i = 0; i < size; i++){
+            days[i].date = head;
+            head.day ++;
+            if (!head.IsLegitDate()){
+                head.day = 1;
+                head.month++;
+            }
+        }
+    }
 };
 
 #endif
