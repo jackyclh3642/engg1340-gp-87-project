@@ -5,6 +5,7 @@
 
 const int kAccountLength = 15;
 const int kCategoryLength = 20;
+const int kIndexLength = 3;
 
 const std::string kAccountStrings[] = {
     "Cash",

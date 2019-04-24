@@ -20,6 +20,20 @@ struct Enquiry{
     int category;
     int is_income;
     std::string search_string;
+    
+    /*
+    * Output the header of the enquiry
+    */
+    std::string Formatted(){
+        std::string r = "Enquiry for";
+        r+= is_income == -1 ? " records" : (is_income == 1 ? " incomes" : " expenses");
+        r += start_date == end_date ? " in " + start_date.Formatted() : " from " +
+            start_date.Formatted() + " to " + end_date.Formatted();
+        r += account == -1 ? "" : " by " + kAccountStrings[account];
+        r += category == -1 ? "" : " of " + kCategoryStrings[category];
+        r += search_string.empty() ? "" : " with remarks \"" + search_string + "\"";
+        return r;
+    }
 };
 
 /**
@@ -103,12 +117,79 @@ struct DayRecords{
         for (int i = 0; i < (size-1); i++){
             ss << transactions[i].Formatted() << std::endl;
         }
-        ss << (transactions[size-1].Formatted());
+        if (size > 0)
+            ss << (transactions[size-1].Formatted());
         return ss.str();
     };
 };
 
 DayRecords& operator << (DayRecords& dr, const Entry& e);
+
+/*
+* Hold the metadata and the pointer to a entry which is a enquiry result
+*/
+struct EnquiryEntry{
+    Date date;
+    Entry* record;
+    
+    /**
+     * Include date in the output
+     */
+    std::string Formatted(){
+        std::string r;
+        r += date.Formatted() + " | " + (*record).Formatted();
+        return r;
+    }
+};
+
+
+/*
+* Holds a dynamic list which gives the metadata and results for an enquiry
+*/
+struct EnquiryResults{
+    Enquiry eq;
+    EnquiryEntry *results;
+    int size;
+    
+    /**
+    * Extend the size of the enquiry entry by 1
+    */
+    void ExtendEntryDynamic(){
+    	EnquiryEntry *temp = new EnquiryEntry[++size];
+    	for(int i = 0; i < (size-1); i++){
+    		temp[i] = results[i];
+    	}
+    	delete [] results;
+    	results = temp;
+    }
+    
+    /*
+    * Output in a table format with index
+    */
+    std::string Formatted(){
+        std::stringstream ss;
+        ss << eq.Formatted() << std::endl;
+        ss << std::setw(kIndexLength) << "i" << " | ";
+        ss << std::setw(10) << "Date" << " | ";
+         ss << std::setw(kAccountLength) << "Account" << " | ";
+         ss << std::setw(kCategoryLength) << "Category" << " | ";
+         ss << std::setw(kMaxAmountLength) << "Amount" << " | ";
+         ss << "Remarks" << std::endl;
+         ss << "----+------------+-----------------+----------------------+------------+-----------------------"
+            <<std::endl;
+        for (int i = 0; i < size-1; i++){
+            ss << std::setw(kIndexLength) << i+1 << " | "
+                << results[i].Formatted() << std::endl;
+        }
+        if (size > 0)
+            ss << std::setw(kIndexLength) << size << " | " << results[size-1].Formatted();
+        return ss.str();
+    }
+};
+
+EnquiryResults& operator << (EnquiryResults& er, const EnquiryEntry& e);
+EnquiryResults& operator << (EnquiryResults& er, const Enquiry& e);
+EnquiryResults& operator << (EnquiryResults& er, const DayRecords& dr);
 
 /**
  * Hold all days recorded within the system in a dynamic list also
@@ -166,6 +247,18 @@ struct DaysDatabase{
 	*/
 	DayRecords& FindDateRecords(Date d){
 	    return days[FindDateIndex(d, 0, size)];
+	}
+	
+	/*
+	* Search for all hits of an equiry and return a pointer to a EnquiryResults
+	*/
+	EnquiryResults IquireFor(const Enquiry e){
+	    EnquiryResults er = {e, nullptr, 0};
+	    int index = FindDateIndex(e.start_date, 0, size);
+	    for (; (index < size) and (days[index].date < e.end_date) or (days[index].date == e.end_date); index++){
+	        er << days[index];
+	    }
+	    return er;
 	}
 };
 
