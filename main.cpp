@@ -3,37 +3,6 @@
 
 using namespace std;
 
-string  findweekofthedate(int day, int month, int year){
-    int N;
-    N= day + 2 * month + 3 * (month + 1 ) / 5 + year + year / 4 - year / 100 + year / 400 + 1;
-    int i = N % 7;
-    switch(i){
-        case 1: return "Monday";
-        case 2: return "Tuesday";
-        case 3: return "Wednesday";
-        case 4: return "Thrusday";
-        case 5: return "Friday";
-        case 6: return "Saturday";  
-        case 0: return "Sunday";
-
-    }
-}
-int if_leap_year(int year){
-    if(year % 4 == 0){
-        if(year % 100 == 0){
-            if (year % 400 == 0){
-                return 1;
-            }
-            else{
-                return 0;
-            }
-        }
-        else{
-            return 0;
-        }
-    }
-    else return 0;
-}
 void initialize_the_calander(date* &head, int year){
         date* p = new date;
         head = p;
