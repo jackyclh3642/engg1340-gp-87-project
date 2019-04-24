@@ -3,15 +3,9 @@
 
 #include <string>
 
-const string kAccountStrings[] = {
-    "Cash",
-    "Bank Card",
-    "Credit Card"
-};
+const string kAccountStrings[] = { "Cash","Bank Card","Credit Card" };
 
-const string kCatagoryStrings = {
-    "Other Income",
-    "Other Expense"
+const string kCatagoryStrings = { "Expenses", "Revenue"    
 };
 
 #endif
