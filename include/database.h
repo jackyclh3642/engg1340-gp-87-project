@@ -72,11 +72,12 @@ struct DayRecords{
     */
     void ExtendTransDynamic(Entry* &transaction, int &size){
     	Entry *temp = new Entry[size + 1];
-	for(int i = 0; i < size; i++){
-		temp[i] = transaction[i];
-	}
-	delete [] transaction;
-	transaction = temp;
+    	for(int i = 0; i < size; i++){
+    		temp[i] = transaction[i];
+    	}
+    	delete [] transaction;
+    	transaction = temp;
+    }
 };
 
 /**
