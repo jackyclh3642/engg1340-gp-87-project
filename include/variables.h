@@ -10,8 +10,33 @@ const std::string kAccountStrings[] = {
 };
 
 const std::string kCatagoryStrings[] = {
-    "Other Income",
-    "Other Expense"
-};
+    "salary","interest","other income",
+       "entertainment", "transportation", "living_expenditure", "money_transfer", "settle_debt", "stocks", "fixed_expenditure", "rents", "other_expenditures"};
+
+/**const std:: string kCatagoryStrings[] = { const std:: string income[] ={"salary", "interest", "other_income"}, const std:: string expenditure[] ={"entertainment", "transportation", "living_expenditure", "money_transfer", "settle_debt", "stocks", "fixed_expenditure", "rents", "other_expenditures"}};
+
+
+
+**/
+
+/**        double entertainment;
+        double transportation;
+        double living_expenditure;
+        double money_transfer;
+        double settle_debt;
+        double stocks;
+        double fixed_expenditure;
+        double rents;
+        double other_expenditure;
+	    double cash_account;
+    double credit_account;
+    double stocks_account;
+    double saving_account;
+            double salary;
+        double interest;
+        double gain_from_stocks;
+        double others_income;
+
+**/
 
 #endif
