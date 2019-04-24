@@ -48,9 +48,9 @@ EnquiryResults& operator << (EnquiryResults& er, const Enquiry& e){
     return er;
 }
 
-EnquiryResults& operator << (EnquiryResults& er, const DayRecords& dr){
+EnquiryResults& operator << (EnquiryResults& er, DayRecords& dr){
     // Use the DayRecords as the input to the enquiry
-    EnquiryEntry ee = {dr.date, nullptr};
+    EnquiryEntry ee = {dr.date, &dr, nullptr};
     for (int i = 0; i < dr.size; i++){
         if (dr.transactions[i].FitsEnquiry(er.eq)){
             ee.record = &dr.transactions[i];
