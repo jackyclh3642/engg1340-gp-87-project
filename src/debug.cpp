@@ -70,13 +70,16 @@ int main(){
     Enquiry all = {start, end, -1, -1, -1, ""};
     EnquiryResults er = dd.IquireFor(all);
     cout << er.Formatted() << endl;
-    cout << "Input a changing index:" << endl;
+    cout << "Input a deleting index:" << endl;
     int index;
     cin >> index;
+    er.DeleteByIndex(index);
+    /**
     Entry &editing = er[index];
     cout << &editing << endl;
     cout << "Editing:" << endl << editing.Formatted() << endl;
     cin >> editing;
+    **/
     er = dd.IquireFor(all);
     cout << er.Formatted() << endl;
 }

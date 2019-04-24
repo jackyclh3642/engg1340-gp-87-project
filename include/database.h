@@ -102,6 +102,21 @@ struct DayRecords{
     }
     
     /**
+     * Delete an entry by index
+     */
+    void DeleteByPointer(const Entry* e_ptr){
+        Entry *temp = new Entry[--size];
+        int offset = 0;
+        for (int i = 0; i < size; i++){
+            if (&temp[i] == e_ptr)
+                offset++;
+            temp[i] = transactions[i+offset];
+        }
+        delete [] transactions;
+        transactions = temp;
+    }
+    
+    /**
      * Output presentable day summary
      */
     std::string Formatted(){
@@ -130,6 +145,7 @@ DayRecords& operator << (DayRecords& dr, const Entry& e);
 */
 struct EnquiryEntry{
     Date date;
+    DayRecords* day_records;
     Entry* record;
     
     /**
@@ -198,19 +214,23 @@ struct EnquiryResults{
     }
     
     /**
-     * Return an entry by index for editing
+     * Return an entry by reference by index for editing
      */
-     
-     
     Entry& operator[] (const int index){
-        std::cout << results[index-1].record << std::endl;
         return *(results[index-1].record);
+    }
+    
+    /**
+     * Delete a entry from corresponding DayRecords by index
+     */
+    void DeleteByIndex (const int index){
+        results[index-1].day_records->DeleteByPointer(results[index-1].record);
     }
 };
 
 EnquiryResults& operator << (EnquiryResults& er, const EnquiryEntry& e);
 EnquiryResults& operator << (EnquiryResults& er, const Enquiry& e);
-EnquiryResults& operator << (EnquiryResults& er, const DayRecords& dr);
+EnquiryResults& operator << (EnquiryResults& er, DayRecords& dr);
 
 /**
  * Hold all days recorded within the system in a dynamic list also
@@ -267,6 +287,10 @@ struct DaysDatabase{
 	* Return the DayRecords for manipulation by date, assume legit date
 	*/
 	DayRecords& FindDateRecords(Date d){
+	    return days[FindDateIndex(d, 0, size)];
+	}
+	
+	DayRecords& operator[](const Date d){
 	    return days[FindDateIndex(d, 0, size)];
 	}
 	
