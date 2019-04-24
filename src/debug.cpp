@@ -28,10 +28,13 @@ int main(){
     **/
     Entry trans;
     cin >> trans;
-    cout << trans.Formatted() << endl;
+    /**
     cout << "Enter a day, month, year" << endl;
     Date d;
     cin >> d;
     cout << "It is the " << dd.FindDateIndex(d, 0, dd.size) << " day of " << d.year << endl;
+    **/
+    dd.days[0] << trans;
+    cout << dd.days[0].Formatted() << endl;
     return 0;
 }

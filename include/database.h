@@ -3,8 +3,11 @@
 
 #include <string>
 #include <iomanip>
+#include <sstream>
 #include "date.h"
 #include "variables.h"
+
+const int kMaxAmountLength = 10;
 
 /**
  * Holds a mult-condition enquiry
@@ -51,10 +54,13 @@ struct Entry{
       * Output presentable string
       */
      std::string Formatted(){
-         std::string r;
-         r += kAccountStrings[account] + " | " + kCatagoryStrings[category] +
-            " | " + std::to_string(amount) + " | " + remarks;
-         return r;
+         std::stringstream ss;
+         ss << std::setw(kAccountLength) << kAccountStrings[account] << " | ";
+         ss << std::setw(kCategoryLength) << kCategoryStrings[category] << " | ";
+         ss << std::setw(kMaxAmountLength);
+         ss << std::fixed << std::setprecision(2) << amount << " | ";
+         ss << remarks;
+         return ss.str();
      }
 };
 
@@ -72,15 +78,37 @@ struct DayRecords{
     /**
     * Extend the size of the transactions by 1
     */
-    void ExtendTransDynamic(Entry* &transaction, int &size){
-    	Entry *temp = new Entry[size + 1];
-    	for(int i = 0; i < size; i++){
-    		temp[i] = transaction[i];
+    void ExtendTransDynamic(){
+    	Entry *temp = new Entry[++size];
+    	for(int i = 0; i < (size-1); i++){
+    		temp[i] = transactions[i];
     	}
-    	delete [] transaction;
-    	transaction = temp;
+    	delete [] transactions;
+    	transactions = temp;
     }
+    
+    /**
+     * Output presentable day summary
+     */
+    std::string Formatted(){
+        std::stringstream ss;
+        ss << "Date: " << date.Formatted() << " (" << date.WeekdayString() 
+            << ")" << std::endl;
+         ss << std::setw(kAccountLength) << "Account" << " | ";
+         ss << std::setw(kCategoryLength) << "Category" << " | ";
+         ss << std::setw(kMaxAmountLength) << "Amount" << " | ";
+         ss << "Remarks" << std::endl;
+         ss << "----------------+----------------------+------------+-----------------------"
+            <<std::endl;
+        for (int i = 0; i < (size-1); i++){
+            ss << transactions[i].Formatted() << std::endl;
+        }
+        ss << (transactions[size-1].Formatted());
+        return ss.str();
+    };
 };
+
+DayRecords& operator << (DayRecords& dr, const Entry& e);
 
 /**
  * Hold all days recorded within the system in a dynamic list also
