@@ -12,7 +12,7 @@ const std::string kAccountStrings[] = {
     "Credit Card"
 };
 
-const std::string kCatagoryStrings[] = {
+const std::string kCategoryStrings[] = {
     "Salary","Other Income",
        "Entertainment", "Transportation", "Living Expense", "Money Transfer", "Settle Debt", "Fixed Expense", "Rent", "Other Expense"};
 
