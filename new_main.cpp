@@ -7,43 +7,7 @@
 
 using namespace std;
 
-//function checking right here
-void initalize_the_database(DaysDatabase maps, int year){
-        maps.InitDatabase(year);
-}
-//function 1
-void appending_today_record(DaysDatabase map, int today_index){
-        Enrty Appending_transactions_input;
-        cout<<"Please input (account)[space](expenditure items/revenue items)[space][amount][space][remark]"<<endl;
-        cout<<"For account:"<<endl;
-        cout<<"Input 1 for Cash   account"<<endl;
-        cout<<"Input 2 for Bank   account"<<endl;
-        cout<<"Input 3 for Credit account"<<endl;
-        cout<<"For expenditure items/revenue items"<<endl;
-        cout<<"Input  0 for Salary(revenue item)"<<endl;
-        cout<<"Input  1 for Other Income(revenue item)"<<endl;
-        cout<<"Input  2 for Entertainment(expenditure item)"<<endl;
-        cout<<"Input  3 for Transportation(expenditure item)"<<endl;
-        cout<<"Input  4 for Living Expense(expenditure item)"<<endl;
-        cout<<"Input  6 for Money transfer(expenditure item)"<<endl;
-        cout<<"Input  7 for Settle Debt(expenditure item)"<<endl;
-        cout<<"Input  8 for Fixed Expense(expenditure item)"<<endl;
-        cout<<"Input  9 for Rents(expenditure item)"<<endl;
-        cout<<"Input 10 for Other Expenditure(expenditure item)"<<endl;
-        cout<<"For amount:"<<endl;
-        cout<<"The amount should be positive when inputting revenue items, while the amount should be negative when inputting expenditure items"<<endl;
-        cout<<"For remark please enter a sentence to specify the transaction"<<endl;
-        cout<<"e.g. I using my cash account for transportation which cost 5 cents"<<endl;
-        cout<<"Please input 1 3 -0.5 I go to school by bus"<<endl;
-        cin >> Appending_transaction_input;
-        map->days[today_index]<< Appending_transaction_input;
-}
-//function for automatic appending
-//automatic setting of each month
-void automatic_setting_for_every_month(DaysDatebase map, int year){
-    //have bugs for setting 29th and 31th and need a function for setting every end of month
-    cout<<"Please first input the fixed_transaction"
-    Enrty Appending_transactions_input;
+void transaction_instruction_text(){
     cout<<"Please input (account)[space](expenditure items/revenue items)[space][amount][space][remark]"<<endl;
     cout<<"For account:"<<endl;
     cout<<"Input 1 for Cash   account"<<endl;
@@ -62,6 +26,32 @@ void automatic_setting_for_every_month(DaysDatebase map, int year){
     cout<<"Input 10 for Other Expenditure(expenditure item)"<<endl;
     cout<<"For amount:"<<endl;
     cout<<"The amount should be positive when inputting revenue items, while the amount should be negative when inputting expenditure items"<<endl;
+    
+}
+
+//function checking right here
+void initalize_the_database(DaysDatabase maps, int year){
+        maps.InitDatabase(year);
+}
+//function 1
+void appending_today_record(DaysDatabase map, int today_index){
+        Enrty Appending_transactions_input;
+        ////////////////
+        transaction_instruction_text;
+        cout<<"For remark please enter a sentence to specify the transaction"<<endl;
+        cout<<"e.g. I using my cash account for transportation which cost 5 cents"<<endl;
+        cout<<"Please input 1 3 -0.5 I go to school by bus"<<endl;
+        cin >> Appending_transaction_input;
+        map->days[today_index]<< Appending_transaction_input;
+}
+//function for automatic appending
+//automatic setting of each month
+void automatic_setting_for_every_month(DaysDatebase map, int year){
+    //have bugs for setting 29th and 31th and need a function for setting every end of month
+    cout<<"Please first input the fixed_transaction"
+    Enrty Appending_transactions_input;
+    //////////////
+    transaction_instruction_text;
     cout<<"For remark please enter a sentence to specify the transaction and add (setting) at the end"<<endl;
     cout<<"e.g. I recieve 5000 for salary "<<endl;
     cout<<"Please input 2 0 5000 salary recieve(setting)"<<endl;
@@ -191,24 +181,8 @@ void editting_past_record(DaysDatabase map, int today){
                                 map->days[past_index]->Formatted();
                                 cout<<"Input the number you want to edit"<<endl;
                                 cin>>correction_location;
-                                cout<<"Please input (account)[space](expenditure items/revenue items)[space][amount][space][remark]"<<endl;
-                                cout<<"For account:"<<endl;
-                                cout<<"Input 1 for Cash   account"<<endl;
-                                cout<<"Input 2 for Bank   account"<<endl;
-                                cout<<"Input 3 for Credit account"<<endl;
-                                cout<<"For expenditure items/revenue items"<<endl;
-                                cout<<"Input  0 for Salary(revenue item)"<<endl;
-                                cout<<"Input  1 for Other Income(revenue item)"<<endl;
-                                cout<<"Input  2 for Entertainment(expenditure item)"<<endl;
-                                cout<<"Input  3 for Transportation(expenditure item)"<<endl;
-                                cout<<"Input  4 for Living Expense(expenditure item)"<<endl;
-                                cout<<"Input  6 for Money transfer(expenditure item)"<<endl;
-                                cout<<"Input  7 for Settle Debt(expenditure item)"<<endl;
-                                cout<<"Input  8 for Fixed Expense(expenditure item)"<<endl;
-                                cout<<"Input  9 for Rents(expenditure item)"<<endl;
-                                cout<<"Input 10 for Other Expenditure(expenditure item)"<<endl;
-                                cout<<"For amount:"<<endl;
-                                cout<<"The amount should be positive when inputting revenue items, while the amount should be negative when inputting expenditure items"<<endl;
+                                ////////////
+                                transaction_instruction_text();
                                 cout<<"For remark please enter a sentence to specify the transaction"<<endl;
                                 cout<<"e.g. I using my cash account for transportation which cost 5 cents"<<endl;
                                 cout<<"Please input 1 3 -0.5 I go to school by bus"<<endl;
@@ -243,24 +217,7 @@ void editting_today_record(DaysDatabse map, int today){
         map->days[today]->Formatted();
         cout<<"Input the number you want to edit"<<endl;
         cin>>correction_location;
-        cout<<"Please input (account)[space](expenditure items/revenue items)[space][amount][space][remark]"<<endl;
-        cout<<"For account:"<<endl;
-        cout<<"Input 1 for Cash   account"<<endl;  
-        cout<<"Input 2 for Bank   account"<<endl;
-        cout<<"Input 3 for Credit account"<<endl;
-        cout<<"For expenditure items/revenue items"<<endl;
-        cout<<"Input  0 for Salary(revenue item)"<<endl;
-        cout<<"Input  1 for Other Income(revenue item)"<<endl;
-        cout<<"Input  2 for Entertainment(expenditure item)"<<endl;
-        cout<<"Input  3 for Transportation(expenditure item)"<<endl;
-        cout<<"Input  4 for Living Expense(expenditure item)"<<endl;
-        cout<<"Input  6 for Money transfer(expenditure item)"<<endl;
-        cout<<"Input  7 for Settle Debt(expenditure item)"<<endl;
-        cout<<"Input  8 for Fixed Expense(expenditure item)"<<endl;
-        cout<<"Input  9 for Rents(expenditure item)"<<endl;
-        cout<<"Input 10 for Other Expenditure(expenditure item)"<<endl;
-        cout<<"For amount:"<<endl;
-        cout<<"The amount should be positive when inputting revenue items, while the amount should be negative when inputting expenditure items"<<endl;
+        transaction_instruction_text();
         cout<<"For remark please enter a sentence to specify the transaction"<<endl;
         cout<<"e.g. I using my cash account for transportation which cost 5 cents"<<endl;
         cout<<"Please input 1 3 -0.5 I go to school by bus"<<endl;
@@ -290,24 +247,7 @@ void appending_past_record(DaysDatabase map, int today_index){
             Entry new_transaction_input;
             past_index = map->FindDateIndex(past, 0, map->size);
             Enrty Appending_transactions_input;
-            cout<<"Please input (account)[space](expenditure items/revenue items)[space][amount][space][remark]"<<endl;
-            cout<<"For account:"<<endl;
-            cout<<"Input 1 for Cash   account"<<endl;
-            cout<<"Input 2 for Bank   account"<<endl;
-            cout<<"Input 3 for Credit account"<<endl;
-            cout<<"For expenditure items/revenue items"<<endl;
-            cout<<"Input  0 for Salary(revenue item)"<<endl;
-            cout<<"Input  1 for Other Income(revenue item)"<<endl;
-            cout<<"Input  2 for Entertainment(expenditure item)"<<endl;
-            cout<<"Input  3 for Transportation(expenditure item)"<<endl;
-            cout<<"Input  4 for Living Expense(expenditure item)"<<endl;
-            cout<<"Input  6 for Money transfer(expenditure item)"<<endl;
-            cout<<"Input  7 for Settle Debt(expenditure item)"<<endl;
-            cout<<"Input  8 for Fixed Expense(expenditure item)"<<endl;
-            cout<<"Input  9 for Rents(expenditure item)"<<endl;
-            cout<<"Input 10 for Other Expenditure(expenditure item)"<<endl;
-            cout<<"For amount:"<<endl;
-            cout<<"The amount should be positive when inputting revenue items, while the amount should be negative when inputting expenditure items"<<endl;
+            transaction_instruction_text();
             cout<<"For remark please enter a sentence to specify the transaction"<<endl;
             cout<<"e.g. I using my cash account for transportation which cost 5 cents"<<endl;
             cout<<"Please input 1 3 -0.5 I go to school by bus"<<endl;
