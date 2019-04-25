@@ -132,11 +132,7 @@ struct DayRecords{
          ss << std::setw(kCategoryLength) << "Category" << " | ";
          ss << std::setw(kMaxAmountLength) << "Amount" << " | ";
          ss <<std::setw(kRemarksLength) << "Remarks" << std::endl;
-<<<<<<< HEAD
          ss << "----------------+----------------------+-----------------+--------------------------------"
-=======
-         ss << "----------------+----------------------+------------+--------------------------------"
->>>>>>> 042d725cb2730c40186220756b87bc14f0078f9c
             <<std::endl;
         for (int i = 0; i < (size-1); i++){
             ss << transactions[i].Formatted() << std::endl;
@@ -202,11 +198,7 @@ struct EnquiryResults{
          ss << std::setw(kCategoryLength) << "Category" << " | ";
          ss << std::setw(kMaxAmountLength) << "Amount" << " | ";
          ss << std::setw(kRemarksLength) << "Remarks" << std::endl;
-<<<<<<< HEAD
          ss << "----+------------+-----------------+----------------------+-----------------+--------------------------------"
-=======
-         ss << "----+------------+-----------------+----------------------+------------+--------------------------------"
->>>>>>> 042d725cb2730c40186220756b87bc14f0078f9c
             <<std::endl;
         for (int i = 0; i < size-1; i++){
             ss << std::setw(kIndexLength) << i+1 << " | "
