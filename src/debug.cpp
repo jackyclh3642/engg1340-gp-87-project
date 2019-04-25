@@ -14,12 +14,13 @@ struct Command{
 };
 
 const int kMaxCommandLength = 30;
-const int kNumCommands = 6;
+const int kNumCommands = 8;
 const Command kCommandList[kNumCommands] = {{'a', "Add a new entry to today."}, {'e', "Edit an entry of today."},
     {'n', "Proceed to next day."}, {'j', "Jump to a specific day."}, {'s', "Save the current database."},
-    {'d', "Delete an entry of today."}
+    {'d', "Delete an entry of today."}, {'u', "Set up automatic entries."}, {'q', "Save all and quit."}
 };
 
+string default_location = "";
 DaysDatabase* db = new DaysDatabase;
 
 void ClearScreen(){
@@ -120,6 +121,7 @@ int InitDatabaseForUser(){
                 ClearScreen();
                 cout << "Loaded the accounting records for " << db->year << ", and showing last recorded day." << endl << endl;
                 fin.close();
+                default_location = input;
                 return index;
             }
             else{
@@ -174,7 +176,7 @@ string InputRemarks(string old){
         getline(cin, input);
         if (input.length() < 30)
             return input;
-        cout << "Please input a string less than 30 characters.";
+        cout << "Please input a string less than 30 characters."<< endl;
     }
 }
 
@@ -215,6 +217,8 @@ void EditEntry(int i){
     ClearScreen();
     cin.ignore(1);
     e.remarks = InputRemarks(e.remarks);
+    
+    er.FreeMemory();
 }
 
 void JumpDay(int&i){
@@ -224,12 +228,23 @@ void JumpDay(int&i){
 }
 
 void SaveDB(){
+    string input = "N";
+    if (!default_location.empty()){
+        cout << "Save to '" << default_location << "'? (Y or N)" << endl;
+        while (true){
+            cin >> input;
+            if (input == "Y" or input == "N")
+                break;
+            cout << "Please enter 'Y' or 'N'.";
+        }
+    }
+    if (input == "N"){
+        cout << "Enter a filename for saving the accounting database:" << endl;
+        cin.ignore(1);
+        getline(cin, default_location);
+    }
     ofstream fou;
-    cout << "Enter a filename for saving the accounting database:" << endl;
-    string filename;
-    cin.ignore(1);
-    getline(cin, filename);
-    fou.open(filename);
+    fou.open(default_location);
     fou << (*db);
     fou.close();
 }
@@ -247,9 +262,48 @@ void DeleteEntry(const int i){
         cin >> index;
         if (index > 0 and index <= er.size)
             break;
-        cout << "Please enter an appropriate index";
+        cout << "Please enter an appropriate index"<< endl;
     }
     er.DeleteByIndex(index);
+    er.FreeMemory();
+}
+
+void SetupAutomatic(int i){
+    Date today = (*db)[i].date;
+    cout << "At which day of the month would a recurring automatic entry (i.e. incomes or expenses) be set from " << today.Formatted() << "?" << endl;
+    int input;
+    while (true){
+        cout << "> ";
+        cin >> input;
+        if (input <= 31 and input > 0)
+            break;
+        cout << "Please enter an appropriate day number of a month." << endl;
+    }
+    
+    ClearScreen();
+    
+    Entry e;
+    e.account = InputAccount(-1);
+    ClearScreen();
+    e.category = InputCategory(-1);
+    ClearScreen();
+    e.amount = InputAmount(0);
+    ClearScreen();
+    cin.ignore(1);
+    e.remarks = InputRemarks("");
+    
+    int starting_month = (*db)[i].date.day < input ? today.month : today.month + 1;
+    for (int j = starting_month; j < 13; j++){
+        Date temp = {input, j, db->year};
+        int temp_input = input;
+        while(!temp.IsLegitDate()){
+            cout << "Month " << kMonthString[j-1] << " does not have day " << temp_input << ". Please enter an appropriate one." << endl;
+            cout << "> ";
+            cin >> temp_input;
+            temp.day = temp_input;
+        }
+        (*db)[temp] << e;
+    }
 }
 
 int main(){
@@ -265,13 +319,13 @@ int main(){
             case 'j': JumpDay(today_index); break;
             case 's': SaveDB();break;
             case 'd': DeleteEntry(today_index);break;
+            case 'u': SetupAutomatic(today_index);break;
+            case 'q': SaveDB();break;
         }
         ClearScreen();
-    } while (input != -1);
-    Date start = {1, 1, 2019};
-    Date end = {1, 12, 2019};
-    Enquiry all = {start, end, -1, -1, -1, "", -1, false};
-    EnquiryResults er = db->IquireFor(all);
-    cout << er.Formatted() << endl;
+    } while (input != 'q');
+    
+    db->FreeDatabaseMemory();
+    return 0;
 }
 

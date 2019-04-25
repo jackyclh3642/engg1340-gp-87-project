@@ -9,6 +9,10 @@ const std::string kWeekString[7] = {"Sunday", "Monday", "Tuesday", "Wednesday",
     "Thursday", "Friday", "Saturday"};
 const std::string kWeekAbbr[7] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
+const std::string kMonthString[12] = {"January", "Febraray", "March",
+    "April", "May", "June", "July", "August", "September", "October", 
+    "November", "December"};
+
 int IsLeapYear(int year);
 
 struct Date {
@@ -36,17 +40,6 @@ struct Date {
          return kWeekString[WeekdayInt()];
      }
     
-    bool IsLegitDate(){
-        // Check if the Date given is legal or not
-        if (year < 1900 or day <= 0 or day > 31 or month <= 0 or month > 12)
-            return false;
-        if (month == 2 and (day > (IsLeapYear(year) ? 29 : 28)))
-            return false;
-        if ((month + (month >=8)) % 2 == 0 and day > 30)
-            return false;
-        return true;
-    }
-    
     /**
     * Output presentable string
     */
@@ -56,6 +49,23 @@ struct Date {
             (month < 10 ? "0" : "") + std::to_string(month) + '/' + 
             std::to_string(year);
         return r;
+    }
+    
+    int LastDayInMonth(){
+        if (month == 2)
+            return IsLeapYear(year) ? 29 : 28;
+        if ((month + (month >=8)) % 2 == 0)
+            return 30;
+        return 31;
+    }
+    
+    bool IsLegitDate(){
+        // Check if the Date given is legal or not
+        if (year < 1900 or day <= 0 or day > 31 or month <= 0 or month > 12)
+            return false;
+        if (day > LastDayInMonth())
+            return false;
+        return true;
     }
 };
 

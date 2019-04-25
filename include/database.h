@@ -233,6 +233,13 @@ struct EnquiryResults{
     void DeleteByIndex (const int index){
         results[index-1].day_records->DeleteByPointer(results[index-1].record);
     }
+    
+    /**
+     * Free memory used by an enquiry records
+     */
+    void FreeMemory(){
+        delete [] results;
+    }
 };
 
 EnquiryResults& operator << (EnquiryResults& er, const EnquiryEntry& e);
