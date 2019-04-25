@@ -7,7 +7,7 @@
 #include "date.h"
 #include "variables.h"
 
-const int kMaxAmountLength = 10;
+const int kMaxAmountLength = 15;
 const std::string kSortString[] = {"Account", "Category", "Amount"};
 
 /**
@@ -132,7 +132,7 @@ struct DayRecords{
          ss << std::setw(kCategoryLength) << "Category" << " | ";
          ss << std::setw(kMaxAmountLength) << "Amount" << " | ";
          ss <<std::setw(kRemarksLength) << "Remarks" << std::endl;
-         ss << "----------------+----------------------+------------+----------------------"
+         ss << "----------------+----------------------+-----------------+--------------------------------"
             <<std::endl;
         for (int i = 0; i < (size-1); i++){
             ss << transactions[i].Formatted() << std::endl;
@@ -198,7 +198,7 @@ struct EnquiryResults{
          ss << std::setw(kCategoryLength) << "Category" << " | ";
          ss << std::setw(kMaxAmountLength) << "Amount" << " | ";
          ss << std::setw(kRemarksLength) << "Remarks" << std::endl;
-         ss << "----+------------+-----------------+----------------------+------------+----------------------"
+         ss << "----+------------+-----------------+----------------------+-----------------+--------------------------------"
             <<std::endl;
         for (int i = 0; i < size-1; i++){
             ss << std::setw(kIndexLength) << i+1 << " | "
@@ -258,6 +258,7 @@ struct DaysDatabase{
         Date head = {1, 1, y};
         for (int i = 0; i < size; i++){
             days[i].date = head;
+            days[i].transactions = nullptr;
             days[i].size = 0;
             head.day ++;
             if (!head.IsLegitDate()){
@@ -338,3 +339,4 @@ std::istream& operator >> (std::istream& is, DaysDatabase& dd);
 std::ostream& operator << (std::ostream& os, const DaysDatabase& dd);
 
 #endif
+
