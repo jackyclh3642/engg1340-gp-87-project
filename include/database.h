@@ -258,6 +258,7 @@ struct DaysDatabase{
         Date head = {1, 1, y};
         for (int i = 0; i < size; i++){
             days[i].date = head;
+            days[i].size = 0;
             head.day ++;
             if (!head.IsLegitDate()){
                 head.day = 1;
@@ -303,6 +304,10 @@ struct DaysDatabase{
 	    return days[FindDateIndex(d, 0, size)];
 	}
 	
+	DayRecords& operator [](const int i){
+	    return days[i];
+	}
+	
 	/*
 	* Search for all hits of an equiry and return a pointer to a EnquiryResults
 	*/
@@ -314,6 +319,19 @@ struct DaysDatabase{
 	    }
 	    return er;
 	}
+	
+	/**
+	 * Return the latest index DayRecords with entrys
+	 */
+    int GetLatestIndex(){
+        int index = 0;
+        for (int i = 0; i < size; i++){
+            if (days[i].size > 0){
+                index = i;
+            }
+        }
+        return index;
+    }
 };
 
 std::istream& operator >> (std::istream& is, DaysDatabase& dd);

@@ -2,99 +2,100 @@
 #include "date.h"
 #include "database.h"
 #include <fstream>
+#include <iomanip>
+#include <string>
 
 using namespace std;
 
+const int kMaxCommandLength = 30;
+const int kNumCommands = 3;
+const string kCommandList[kNumCommands] = {"Add a new entry to today.","Edit today's records", "Proceed to next day."};
+
+DaysDatabase* db = new DaysDatabase;
+
+void ClearScreen(){
+    for (int i = 0; i < 10; i++){
+        cout << endl;
+    }
+}
+
+Date InputDate(int year){
+    Date d;
+    while(true){
+        if (year != -1){
+            cout << "Please enter a date in (d)d/(m)m format: e.g. 31/8 for 31st of August" << endl;
+            d.year = year;
+            scanf("%d/%d",&d.day,&d.month);
+        }
+        else{
+            cout << "Please enter a date in (d)d/(m)m/yyyy: e.g. 31/8/2019 for 31st of August 2019" << endl;
+            scanf("%d/%d/%d", &d.day, &d.month, &d.year);
+        }
+        if (d.IsLegitDate())
+            return d;
+        cout << "The input date is not legit, please enter a new one:" << endl;
+    }
+}
+
+int InitDatabaseForUser(){
+    string input;
+    Date d;
+    ClearScreen();
+    while (true){
+        cout << "Enter 'new' for new accounting year, or the filename of a saved year"
+            << " to load the records." << endl;
+        getline(cin, input);
+        if (input == "new"){
+            ClearScreen();
+            cout << "What is the date for the first records? (e.g. today)" << endl;
+            d = InputDate(-1);
+            db->InitDatabase(d.year);
+            return db->FindDateIndex(d, 0, db->size);
+        }
+        else {
+            ifstream fin;
+            fin.open(input);
+            if (fin.good()){
+                fin >> (*db);
+                int index = db->GetLatestIndex();
+                ClearScreen();
+                cout << "Loaded the accounting records for " << db->year << ", and showing last recorded day." << endl << endl;
+                return index;
+            }
+            else{
+                ClearScreen();
+                cout << "File '" << input << "' cannot be found or unaccessible." << endl;
+            }
+        }
+    }
+}
+
+int TodayAndInstructions(int i){
+
+    cout << (*db)[i].Formatted() << endl << endl;
+    
+    cout << "Command List:"<<endl;
+    for (int i = 0; i < kNumCommands; i++){
+        cout << right << setw(3) << i+1 << ": " << setw(kMaxCommandLength) <<left << kCommandList[i] << " ";
+        if (((i+1)%3 == 0) and (i+1) != kNumCommands)
+            cout << endl;
+    }
+    
+    int input;
+    cout << endl << endl<< "> ";
+    cin >> input;
+}
+
 int main(){
-    /**
-    cout<<"Please input day, month and year:"<<endl;
-    Date d;
-    cin >> d;
-    cout << d << " is a " << d.WeekdayString() << endl;
-    cout << d << " is a " << (d.IsLegitDate() ? "legit" : "not legit") << endl; 
-    cout<<"Please input day, month and year:"<<endl;
-    Date d2;
-    cin >> d2;
-    cout << d << " and " << d2 << " are " << (d==d2 ?"the same":"different")
-        << endl;
-    cout << d << (d < d2 ? "<" : (d > d2 ? ">" : "==")) << d2 << endl;
-    **/
-    /**
-    DaysDatabase dd;
-    dd.InitDatabase(2019);
-    **/
-    /** Test for valid dates
-    for (int i = 0; i < dd.size; i++){
-        cout << dd.days[i].date.Formatted() << " ";
-    }
-    Entry trans;
-    cin >> trans;
-    cout << "Enter a day, month, year" << endl;
-    Date d;
-    cin >> d;
-    cout << "It is the " << dd.FindDateIndex(d, 0, dd.size) << " day of " << d.year << endl;
-    **/
-    /**
-    Date d;
-    cin >> d;
-    // This two
-    dd.FindDateRecords(d) << trans;
-    cout << dd.FindDateRecords(d).Formatted() << endl;
-    return 0;
-    **/
-    /**
-    Entry trans[5];
-    Date d = {1, 1, 2019};
-    Enquiry er = {d, d, 0 , 0, 1, "Something"};
-    cout << er.Formatted() << endl;
-    EnquiryResults eq_r = {er, nullptr, 0};
-    for (int i = 0; i < 3; i++){
-        cin >> trans[i];
-        EnquiryEntry e = {d, &trans[i]};
-        eq_r << e;
-    }
-    cout << eq_r.Formatted() << endl;
-    **/
-    /**
-    ofstream fou;
-    fou.open("save.txt");
-    DaysDatabase dd;
-    Date start = {1, 1, 2019};
-    Date end = {1, 12, 2019};
-    dd.InitDatabase(2019);
-    for (int i = 0; i < 2; i++){
-        Date d;
-        cout << "Input a date:" << endl;
-        cin >> d;
-        cout << "Input a entry:" << endl;
-        Entry e;
-        cin >> e;
-        dd.FindDateRecords(d) << e;
-    }
-    Enquiry all = {start, end, -1, -1, -1, ""};
-    EnquiryResults er = dd.IquireFor(all);
-    cout << er.Formatted() << endl;
-    fou << dd;
-    **/
-    ifstream fin;
-    fin.open("save.txt");
-    DaysDatabase dd;
-    fin >> dd;
+    int today_index = InitDatabaseForUser();
+    int input;
+    do{
+        ClearScreen();
+        input = TodayAndInstructions(today_index);
+    } while (input != -1);
     Date start = {1, 1, 2019};
     Date end = {1, 12, 2019};
     Enquiry all = {start, end, -1, -1, -1, "", -1, false};
-    EnquiryResults er = dd.IquireFor(all);
+    EnquiryResults er = db->IquireFor(all);
     cout << er.Formatted() << endl;
-    /**
-    cout << "Input a deleting index:" << endl;
-    int index;
-    cin >> index;
-    er.DeleteByIndex(index);
-    Entry &editing = er[index];
-    cout << &editing << endl;
-    cout << "Editing:" << endl << editing.Formatted() << endl;
-    cin >> editing;
-    er = dd.IquireFor(all);
-    cout << er.Formatted() << endl;
-    **/
 }
