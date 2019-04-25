@@ -1,6 +1,7 @@
 #include <iostream>
 #include "date.h"
 #include "database.h"
+#include <fstream>
 
 using namespace std;
 
@@ -54,6 +55,9 @@ int main(){
     }
     cout << eq_r.Formatted() << endl;
     **/
+    /**
+    ofstream fou;
+    fou.open("save.txt");
     DaysDatabase dd;
     Date start = {1, 1, 2019};
     Date end = {1, 12, 2019};
@@ -70,16 +74,27 @@ int main(){
     Enquiry all = {start, end, -1, -1, -1, ""};
     EnquiryResults er = dd.IquireFor(all);
     cout << er.Formatted() << endl;
+    fou << dd;
+    **/
+    ifstream fin;
+    fin.open("save.txt");
+    DaysDatabase dd;
+    fin >> dd;
+    Date start = {1, 1, 2019};
+    Date end = {1, 12, 2019};
+    Enquiry all = {start, end, -1, -1, -1, ""};
+    EnquiryResults er = dd.IquireFor(all);
+    cout << er.Formatted() << endl;
+    /**
     cout << "Input a deleting index:" << endl;
     int index;
     cin >> index;
     er.DeleteByIndex(index);
-    /**
     Entry &editing = er[index];
     cout << &editing << endl;
     cout << "Editing:" << endl << editing.Formatted() << endl;
     cin >> editing;
-    **/
     er = dd.IquireFor(all);
     cout << er.Formatted() << endl;
+    **/
 }

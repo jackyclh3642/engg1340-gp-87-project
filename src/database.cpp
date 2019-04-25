@@ -59,3 +59,41 @@ EnquiryResults& operator << (EnquiryResults& er, DayRecords& dr){
     }
     return er;
 }
+
+istream& operator >> (istream& is, DayRecords& dr){
+    Entry er;
+    is >> dr.date;
+    int size;
+    is >> size;
+    for (int i = 0; i < size; i++){
+        is >> er;
+        dr << er;
+    }
+    return is;
+}
+
+ostream& operator << (std::ostream& os, const DayRecords& dr){
+    os << dr.date << " " << dr.size << endl;
+    for (int i = 0; i < dr.size; i++){
+        os << dr.transactions[i] << endl;
+    }
+    return os;
+}
+
+istream& operator >> (istream& is, DaysDatabase& dd){
+    int year;
+    is >> year;
+    dd.InitDatabase(year);
+    for (int i =0; i < dd.size; i++){
+        is >> dd.days[i];
+    }
+    return is;
+}
+
+ostream& operator << (ostream& os, const DaysDatabase& dd){
+    os << dd.year << endl;
+    for (int i = 0; i < dd.size; i++){
+        os << dd.days[i];
+    }
+    return os;
+}

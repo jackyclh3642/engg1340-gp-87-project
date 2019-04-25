@@ -73,7 +73,7 @@ struct Entry{
          ss << std::setw(kCategoryLength) << kCategoryStrings[category] << " | ";
          ss << std::setw(kMaxAmountLength);
          ss << std::fixed << std::setprecision(2) << amount << " | ";
-         ss << remarks;
+         ss << std::setw(kRemarksLength) << remarks;
          return ss.str();
      }
 };
@@ -126,8 +126,8 @@ struct DayRecords{
          ss << std::setw(kAccountLength) << "Account" << " | ";
          ss << std::setw(kCategoryLength) << "Category" << " | ";
          ss << std::setw(kMaxAmountLength) << "Amount" << " | ";
-         ss << "Remarks" << std::endl;
-         ss << "----------------+----------------------+------------+-----------------------"
+         ss <<std::setw(kRemarksLength) << "Remarks" << std::endl;
+         ss << "----------------+----------------------+------------+----------------------"
             <<std::endl;
         for (int i = 0; i < (size-1); i++){
             ss << transactions[i].Formatted() << std::endl;
@@ -158,6 +158,8 @@ struct EnquiryEntry{
     }
 };
 
+std::istream& operator >> (std::istream& is, DayRecords& dr);
+std::ostream& operator << (std::ostream& os, const DayRecords& dr);
 
 /*
 * Holds a dynamic list which gives the metadata and results for an enquiry
@@ -190,8 +192,8 @@ struct EnquiryResults{
          ss << std::setw(kAccountLength) << "Account" << " | ";
          ss << std::setw(kCategoryLength) << "Category" << " | ";
          ss << std::setw(kMaxAmountLength) << "Amount" << " | ";
-         ss << "Remarks" << std::endl;
-         ss << "----+------------+-----------------+----------------------+------------+-----------------------"
+         ss << std::setw(kRemarksLength) << "Remarks" << std::endl;
+         ss << "----+------------+-----------------+----------------------+------------+----------------------"
             <<std::endl;
         for (int i = 0; i < size-1; i++){
             ss << std::setw(kIndexLength) << i+1 << " | "
@@ -237,16 +239,18 @@ EnquiryResults& operator << (EnquiryResults& er, DayRecords& dr);
  */
 struct DaysDatabase{
     DayRecords *days;
+    int year;
     int size;
     
     /*
     * Init the year database depends on the year
     */
-    void InitDatabase(int year){
-        size = (IsLeapYear(year) ? 366 : 365);
+    void InitDatabase(int y){
+        year = y;
+        size = (IsLeapYear(y) ? 366 : 365);
         days = new DayRecords[size];
         
-        Date head = {1, 1, year};
+        Date head = {1, 1, y};
         for (int i = 0; i < size; i++){
             days[i].date = head;
             head.day ++;
@@ -306,5 +310,8 @@ struct DaysDatabase{
 	    return er;
 	}
 };
+
+std::istream& operator >> (std::istream& is, DaysDatabase& dd);
+std::ostream& operator << (std::ostream& os, const DaysDatabase& dd);
 
 #endif
