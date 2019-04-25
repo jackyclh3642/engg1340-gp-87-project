@@ -13,15 +13,16 @@ struct Command{
     string desc;
 };
 
-const int kMaxCommandLength = 30;
-const int kNumCommands = 8;
-const Command kCommandList[kNumCommands] = {{'a', "Add a new entry to today."}, {'e', "Edit an entry of today."},
+const int kMaxCommandLength = 35;
+const int kNumCommands = 11;
+const Command kCommandList[kNumCommands] = {{'a', "Add a new entry to today."}, {'e', "Edit an entry of today."},{'d', "Delete an entry of today."},
     {'n', "Proceed to next day."}, {'j', "Jump to a specific day."}, {'s', "Save the current database."},
-    {'d', "Delete an entry of today."}, {'u', "Set up automatic entries."}, {'q', "Save all and quit."}
+    {'v', "Filter, sort and view entries."}, {'r', "View monthly statistical report."},{'u', "Set up monthly automatic entries."},{'b', "Set up monthly budget"}, {'q', "Save all and quit."}
 };
 
 string default_location = "";
 DaysDatabase* db = new DaysDatabase;
+double budget_per_month = -1;
 
 void ClearScreen(){
     for (int i = 0; i < 10; i++){
@@ -52,24 +53,37 @@ Date InputDate(int year){
     }
 }
 
-int InputAccount(int old){
-    cout << "Input the account infomration for the entry: ";
-    if (old != -1)
-        cout << "[" << kAccountStrings[old] << "]";
-    cout << endl << endl;
+void PrintAccounts(){
     cout << "List of Accounts:"<<endl;
     for (int i = 0; i < kMaxNumAccount; i++){
         cout << right << setw(3) << i+1 << ": " << setw(kAccountLength) <<left << kAccountStrings[i] << " ";
         if (((i+1)%3 == 0) and (i+1) != kMaxNumAccount)
             cout << endl;
     }
+}
+
+int InputAccount(int old){
+    cout << "Input the account infomration for the entry: ";
+    if (old != -1)
+        cout << "[" << kAccountStrings[old] << "]";
+    cout << endl << endl;
+    PrintAccounts();
     int input;
     while (true){
         cout << endl << endl << "> ";
         cin >> input;
         if (input <= kMaxNumAccount and input > 0)
             return input -1;
-        cout << "The number entered is not valid, please enter a valid account.";
+        cout << "The number entered is not valid, please enter a valid account." << endl;
+    }
+}
+
+void PrintCategory(){
+    cout << "List of Categorys: (1-3 are incomes, 4-11 are expenses)" << endl;
+    for (int i = 0; i < kMaxNumCategory; i++){
+        cout << right << setw(3) << i+1 << ": " << setw(kCategoryLength) <<left << kCategoryStrings[i] << " ";
+        if (((i+1)%3 == 0) and (i+1) != kMaxNumCategory)
+            cout << endl;
     }
 }
 
@@ -78,19 +92,14 @@ int InputCategory(int old){
     if (old != -1)
         cout << "[" << kCategoryStrings[old] << "]";
     cout << endl <<endl;
-    cout << "List of Categorys:" << endl;
-    for (int i = 0; i < kMaxNumCategory; i++){
-        cout << right << setw(3) << i+1 << ": " << setw(kCategoryLength) <<left << kCategoryStrings[i] << " ";
-        if (((i+1)%3 == 0) and (i+1) != kMaxNumCategory)
-            cout << endl;
-    }
+    PrintCategory();
     int input;
     while (true){
         cout << endl << endl << "> ";
         cin >> input;
         if (input <= kMaxNumCategory and input > 0)
             return input -1;
-        cout << "The number entered is not valid, please enter a valid category.";
+        cout << "The number entered is not valid, please enter a valid category." << endl;
     }
 }
 
@@ -132,6 +141,19 @@ int InitDatabaseForUser(){
     }
 }
 
+float MonthsExpense(int i){
+    Date today = (*db)[i].date;
+    Date start = today;
+    start.day = 1;
+    Date end = today;
+    end.day = end.LastDayInMonth();
+    Enquiry eq = {start, end, -1, -1, 0, "", -1};
+    EnquiryResults er = db->IquireFor(eq);
+    float r = er.Sum();
+    er.FreeMemory();
+    return r;
+}
+
 char TodayAndInstructions(int i){
 
     cout << (*db)[i].Formatted() << endl << endl;
@@ -144,7 +166,28 @@ char TodayAndInstructions(int i){
     }
     
     char input;
-    cout << endl << endl<< "> ";
+    cout << endl << endl;
+    cout << "Monthly budget: " << setw(kMaxAmountLength);
+    if (budget_per_month>0)
+        cout << fixed << setprecision(2) << budget_per_month;
+    else
+        cout << "unset";
+    cout << "     Monthly quota: " << setw(kMaxAmountLength);
+    if (budget_per_month>0){
+        float quota = budget_per_month + MonthsExpense(i);
+        cout << fixed << setprecision(2) << quota;
+        if (quota < 0)
+            cout << "(EXCEEDED)";
+        else if (quota < budget_per_month * 0.1)
+            cout << "(ALERT)";
+        else if (quota < budget_per_month * 0.2)
+            cout << "(WARNING)";
+        else if (quota < budget_per_month * 0.3)
+            cout << "(CAUTION)";
+    }
+    else
+        cout << "unlimited";
+    cout << endl << "> ";
     cin >> input;
     return input;
 }
@@ -206,7 +249,7 @@ void EditEntry(int i){
         cin >> index;
         if (index > 0 and index <= er.size)
             break;
-        cout << "Please enter an appropriate index" << endl;
+        cout << "Please enter an appropriate index." << endl;
     }
     Entry& e = er[index];
     e.account = InputAccount(e.account);
@@ -235,7 +278,7 @@ void SaveDB(){
             cin >> input;
             if (input == "Y" or input == "N")
                 break;
-            cout << "Please enter 'Y' or 'N'.";
+            cout << "Please enter 'Y' or 'N'." << endl;
         }
     }
     if (input == "N"){
@@ -306,6 +349,169 @@ void SetupAutomatic(int i){
     }
 }
 
+void AdvancedSearch(){
+    cout << "Are you searching for a range of time (as oppose to filtering a single day)?  (Y or N)" << endl;
+    char input;
+    while (true){
+        cout << "> ";
+        cin >> input;
+        if (input == 'Y' or input == 'N')
+            break;
+        cout << "Please enter 'Y' or 'N'." << endl;
+    }
+    Date start;
+    Date end;
+    if(input == 'Y'){
+        ClearScreen();
+        cout << "What is the starting day of the time range?"<<endl<<endl;
+        start = InputDate(db->year);
+        ClearScreen();
+        cout << "What is the ending day (inclusive) of the time range?" << endl << endl;
+        end = InputDate(db->year);
+    }
+    else{
+        ClearScreen();
+        cout << "Which day's records would you like to search for?" << endl << endl;
+        start = InputDate(db->year);
+        end = start;
+    }
+    ClearScreen();
+    cout << "Would you like to show entries of specific account only? (0 to show any accounts)" << endl << endl;
+    PrintAccounts();
+    int account;
+    while (true){
+        cout << endl << endl << "> ";
+        cin >> account;
+        if (account <= kMaxNumAccount and account >= 0)
+            account--;
+            break;
+        cout << "The number entered is not valid, please enter a valid account." << endl;
+    }
+    ClearScreen();
+    cout << "Would you like to show entries of specific category only? (0 to show any categories)" << endl << endl;
+    PrintCategory();
+    int category;
+    while (true){
+        cout << endl << endl << "> ";
+        cin >> category;
+        if (category <= kMaxNumCategory and category >= 0)
+            category--;
+            break;
+        cout << "The number entered is not valid, please enter a valid category." << endl;
+    }
+    ClearScreen();
+    cout << "Would you like to show certain transaction only? (0 for any records, +number for income, -number for expenses)" << endl << "> ";
+    int is_income;
+    cin >> is_income;
+    is_income = is_income == 0 ? -1 : is_income > 0;
+    ClearScreen();
+    cout << "Would you like to search word in remarks? (leave empty for any remarks)"<< endl << "> ";
+    string search_string;
+    cin.ignore(1);
+    getline(cin, search_string);
+    ClearScreen();
+    cout << "How would you like the record to be sorted by? (c for chronological order, a for account, e for category, m for amount)" << endl<< "> ";
+    while (true){
+        cin >> input;
+        if (input == 'c' or input == 'a' or input == 'e' or input == 'm')
+            break;
+    }
+    ClearScreen();
+    int sort_by;
+    switch (input){
+        case 'c': sort_by = -1; break;
+        case 'a': sort_by = 0; break;
+        case 'e': sort_by = 1; break;
+        case 'm': sort_by = 2; break;
+    }
+    bool ascending = true;
+    if (sort_by == 2){
+        ClearScreen();
+        cout << "Would you like to have amount in ascending order? (Y or N)" << endl;
+        while (true){
+            cout << "> ";
+            cin >> input;
+            if (input == 'Y' or input == 'N')
+                break;
+            cout << "Please enter 'Y' or 'N'." << endl;
+        }
+        ascending = input == 'Y';
+    }
+    ClearScreen();
+    Enquiry eq = {start, end, account, category, is_income, search_string, sort_by, ascending};
+    EnquiryResults er = db->IquireFor(eq);
+    cout << er.Formatted() << endl << endl;
+    cout << "Press 'Enter' to quit this enquiry." << endl;
+    cin.ignore(1);
+    string temp;
+    getline(cin, temp);
+    er.FreeMemory();
+}
+
+void SetupBudget(){
+    cout << "What would be your new monthly budget? (0 or lower to unset budget) "<< "[";
+    if (budget_per_month>0)
+        cout << fixed << setprecision(2) << budget_per_month;
+    else
+        cout << "unset";
+    cout << "]" << endl << "> ";
+    cin >> budget_per_month;
+}
+
+void MonthlyReport(int i){
+    Date today = (*db)[i].date;
+    Date start = today;
+    start.day = 1;
+    Date end = today;
+    end.day = end.LastDayInMonth();
+    float sum_category[kMaxNumCategory];
+    float types_of_income[2];
+    for (int i = 0; i < kMaxNumCategory; i++){
+        Enquiry eq = {start, end, -1, i, -1, "", -1};
+        EnquiryResults er = db->IquireFor(eq);
+        sum_category[i] = er.Sum();
+        er.FreeMemory();
+    }
+    for (int i = 0; i < 2; i++){
+        Enquiry eq = {start, end, -1, -1, i, "", -1};
+        EnquiryResults er = db->IquireFor(eq);
+        types_of_income[i] = er.Sum();
+        er.FreeMemory();
+    }
+    cout << "Statistical Report for " << kMonthString[today.month-1] << " of " << db->year << endl << endl;
+    
+    cout << setw(kCategoryLength) << "Total Incomes:" << "   " << fixed <<
+        setw(kMaxAmountLength) << setprecision(2) << types_of_income[1] <<endl<<endl;
+    cout << setw(kCategoryLength) << "Category" << " | " <<
+        setw(kMaxAmountLength) << "Sum" << " | " << setw(kMaxAmountLength) << "Percentage (%)" << endl;
+    cout << "---------------------+-----------------+-----------------"<<endl;
+    for (int i =0; i < 3; i++){
+        cout << setw(kCategoryLength) << kCategoryStrings[i] << " | " << setw(kMaxAmountLength) << fixed << setprecision(2) << sum_category[i] << " | " <<
+            setw(kMaxAmountLength) << fixed << setprecision(2) << sum_category[i]/types_of_income[1]*100 << endl;
+    }
+    cout << endl;
+    
+    cout << setw(kCategoryLength) << "Total Expenses:" << "   " << fixed <<
+        setw(kMaxAmountLength) << setprecision(2) << types_of_income[0] << endl <<endl;
+    cout << setw(kCategoryLength) << "Category" << " | " <<
+        setw(kMaxAmountLength) << "Sum" << " | " << setw(kMaxAmountLength) << "Percentage (%)" << endl;
+    cout << "---------------------+-----------------+-----------------"<<endl;
+    for (int i =3; i < 11; i++){
+        cout << setw(kCategoryLength) << kCategoryStrings[i] << " | " << setw(kMaxAmountLength) << fixed << setprecision(2) << sum_category[i] << " | " <<
+            setw(kMaxAmountLength) << fixed << setprecision(2);
+        if (sum_category[i] == 0)
+            cout << 0;
+        else
+            cout << sum_category[i]/types_of_income[0] *100;
+        cout << endl;
+    }
+    
+    cout << endl << "Press 'Enter' to quit this enquiry." << endl;
+    cin.ignore(1);
+    string temp;
+    getline(cin, temp);
+}
+
 int main(){
     int today_index = InitDatabaseForUser();
     char input;
@@ -321,6 +527,9 @@ int main(){
             case 'd': DeleteEntry(today_index);break;
             case 'u': SetupAutomatic(today_index);break;
             case 'q': SaveDB();break;
+            case 'v': AdvancedSearch();break;
+            case 'b': SetupBudget();break;
+            case 'r': MonthlyReport(today_index);break;
         }
         ClearScreen();
     } while (input != 'q');
@@ -328,4 +537,5 @@ int main(){
     db->FreeDatabaseMemory();
     return 0;
 }
+
 
