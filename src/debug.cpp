@@ -14,9 +14,10 @@ struct Command{
 };
 
 const int kMaxCommandLength = 30;
-const int kNumCommands = 3;
+const int kNumCommands = 6;
 const Command kCommandList[kNumCommands] = {{'a', "Add a new entry to today."}, {'e', "Edit an entry of today."},
-    {'n', "Proceed to next day."}
+    {'n', "Proceed to next day."}, {'j', "Jump to a specific day."}, {'s', "Save the current database."},
+    {'d', "Delete an entry of today."}
 };
 
 DaysDatabase* db = new DaysDatabase;
@@ -43,6 +44,9 @@ Date InputDate(int year){
         }
         if (d.IsLegitDate())
             return d;
+        d.day = 0;
+        d.month = 0;
+        d.year = 0;
         cout << "The input date is not legit, please enter a new one:" << endl;
     }
 }
@@ -58,10 +62,14 @@ int InputAccount(int old){
         if (((i+1)%3 == 0) and (i+1) != kMaxNumAccount)
             cout << endl;
     }
-    cout << endl << endl << "> ";
     int input;
-    cin >> input;
-    return input - 1;
+    while (true){
+        cout << endl << endl << "> ";
+        cin >> input;
+        if (input <= kMaxNumAccount and input > 0)
+            return input -1;
+        cout << "The number entered is not valid, please enter a valid account.";
+    }
 }
 
 int InputCategory(int old){
@@ -75,10 +83,14 @@ int InputCategory(int old){
         if (((i+1)%3 == 0) and (i+1) != kMaxNumCategory)
             cout << endl;
     }
-    cout << endl << endl << "> ";
     int input;
-    cin >> input;
-    return input -1;
+    while (true){
+        cout << endl << endl << "> ";
+        cin >> input;
+        if (input <= kMaxNumCategory and input > 0)
+            return input -1;
+        cout << "The number entered is not valid, please enter a valid category.";
+    }
 }
 
 int InitDatabaseForUser(){
@@ -107,6 +119,7 @@ int InitDatabaseForUser(){
                 int index = db->GetLatestIndex();
                 ClearScreen();
                 cout << "Loaded the accounting records for " << db->year << ", and showing last recorded day." << endl << endl;
+                fin.close();
                 return index;
             }
             else{
@@ -178,6 +191,67 @@ void AddEntry(int i){
     (*db)[i] << e;
 }
 
+void EditEntry(int i){
+    Date d = (*db)[i].date;
+    Enquiry eq = {d,d, -1, -1, -1, "", -1};
+    EnquiryResults er = db->IquireFor(eq);
+    if (er.size == 0)
+        return;
+    cout << er.Formatted() << endl << endl;
+    int index;
+    while (true){
+        cout << "Input an index for editing:" << endl << "> ";
+        cin >> index;
+        if (index > 0 and index <= er.size)
+            break;
+        cout << "Please enter an appropriate index" << endl;
+    }
+    Entry& e = er[index];
+    e.account = InputAccount(e.account);
+    ClearScreen();
+    e.category = InputCategory(e.category);
+    ClearScreen();
+    e.amount = InputAmount(e.amount);
+    ClearScreen();
+    cin.ignore(1);
+    e.remarks = InputRemarks(e.remarks);
+}
+
+void JumpDay(int&i){
+    Date d;
+    d = InputDate(db->year);
+    i = db->FindDateIndex(d, 0, db->size);
+}
+
+void SaveDB(){
+    ofstream fou;
+    cout << "Enter a filename for saving the accounting database:" << endl;
+    string filename;
+    cin.ignore(1);
+    getline(cin, filename);
+    fou.open(filename);
+    fou << (*db);
+    fou.close();
+}
+
+void DeleteEntry(const int i){
+    Date d = (*db)[i].date;
+    Enquiry eq = {d,d, -1, -1, -1, "", -1};
+    EnquiryResults er = db->IquireFor(eq);
+    if (er.size == 0)
+        return;
+    cout << er.Formatted() << endl << endl;
+    int index;
+    while (true){
+        cout << "Input an index for editing:" << endl << "> ";
+        cin >> index;
+        if (index > 0 and index <= er.size)
+            break;
+        cout << "Please enter an appropriate index";
+    }
+    er.DeleteByIndex(index);
+}
+
 int main(){
     int today_index = InitDatabaseForUser();
     char input;
@@ -186,8 +260,13 @@ int main(){
         ClearScreen();
         switch(input){
             case 'a': AddEntry(today_index); break;
+            case 'e': EditEntry(today_index); break;
             case 'n': ProceedDay(today_index); break;
+            case 'j': JumpDay(today_index); break;
+            case 's': SaveDB();break;
+            case 'd': DeleteEntry(today_index);break;
         }
+        ClearScreen();
     } while (input != -1);
     Date start = {1, 1, 2019};
     Date end = {1, 12, 2019};
@@ -195,3 +274,4 @@ int main(){
     EnquiryResults er = db->IquireFor(all);
     cout << er.Formatted() << endl;
 }
+
