@@ -6,7 +6,7 @@
 
 using namespace std;
 
-//function checking right here 
+//function checking right here
 void initalize_the_database(DaysDatabase maps, int year){
         maps.InitDatabase(year);
 }
@@ -35,7 +35,107 @@ void appending_today_record(DaysDatabase map, int today_index){
         cout<<"e.g. I using my cash account for transportation which cost 5 cents"<<endl;
         cout<<"Please input 1 3 -0.5 I go to school by bus"<<endl;
         cin >> Appending_transaction_input;
-        map->days[today]<< Appending_transaction_input;
+        map->days[today_index]<< Appending_transaction_input;
+}
+//function for automatic appending
+//automatic setting of each month
+void automatic_setting_for_every_month(DaysDatebase map, int year){
+    //have bugs for setting 29th and 31th and need a function for setting every end of month
+    cout<<"Please first input the fixed_transaction"
+    Enrty Appending_transactions_input;
+    cout<<"Please input (account)[space](expenditure items/revenue items)[space][amount][space][remark]"<<endl;
+    cout<<"For account:"<<endl;
+    cout<<"Input 1 for Cash   account"<<endl;
+    cout<<"Input 2 for Bank   account"<<endl;
+    cout<<"Input 3 for Credit account"<<endl;
+    cout<<"For expenditure items/revenue items"<<endl;
+    cout<<"Input  0 for Salary(revenue item)"<<endl;
+    cout<<"Input  1 for Other Income(revenue item)"<<endl;
+    cout<<"Input  2 for Entertainment(expenditure item)"<<endl;
+    cout<<"Input  3 for Transportation(expenditure item)"<<endl;
+    cout<<"Input  4 for Living Expense(expenditure item)"<<endl;
+    cout<<"Input  6 for Money transfer(expenditure item)"<<endl;
+    cout<<"Input  7 for Settle Debt(expenditure item)"<<endl;
+    cout<<"Input  8 for Fixed Expense(expenditure item)"<<endl;
+    cout<<"Input  9 for Rents(expenditure item)"<<endl;
+    cout<<"Input 10 for Other Expenditure(expenditure item)"<<endl;
+    cout<<"For amount:"<<endl;
+    cout<<"The amount should be positive when inputting revenue items, while the amount should be negative when inputting expenditure items"<<endl;
+    cout<<"For remark please enter a sentence to specify the transaction and add (setting) at the end"<<endl;
+    cout<<"e.g. I recieve 5000 for salary "<<endl;
+    cout<<"Please input 2 0 5000 salary recieve(setting)"<<endl;
+    cin>>Appending_transactions_input;
+    cout<<"Please input the date for automatic set"
+    int setting_index;
+    cout<<"e.g. I recieve my salary on 7th every month";
+    cout<<"Please input 7"
+    cin>>date;
+    if (!IsLeapYear && date == 29){
+        int Feb_date;
+        cout<<year<<"does not have 29th Febraray"<<endl;
+        cout<<"Please input the date for Febrary"<<endl;
+        cin>>Feb_date;
+        Date target_date;
+        int target_index;
+        for(int month = 1; month < 13; month++){
+            if(month == 2){
+                target_date = {Feb_date, month, year};
+                target_index = map->FindDateIndex(target_date, 0, map->size);
+                map->days[target_index]<<Appending_transaction_input;
+            }
+            else{
+                target_date = {date, month, year};
+                target_index = map->FindDateIndex(target_date, 0, map->size);
+                map->days[target_index]<<Appending_transaction_input;
+            }
+        }
+    }
+    if (date == 31){
+        cout<<"There do not have 31th in Febrary, April, June, September and Novemeber"<<end;
+        cout<<"Please input a date for them"<<endl;
+        int smaller_month_date;
+        cin>>smaller_month_date;
+        if (smaller_month_date == 30){
+            cout<<"There is no 30th in Febraray"<<endl;
+            cout<<"Please input a date for Febrary"<<endl;
+            int Febrary_date;
+            cin>>Febrary_date;
+            if ( !IsLeapYear(year) && Febrary_date == 29){
+                cout<<"There does not have 29th Febrary in "<<year<<endl;
+                cout<<"Please input another date for Febrary"<<endl;
+                cin>>Febrary_date;
+                Date target_date;
+                int target_index;
+                for (int month = 1; month < 13; month++){
+                    if (month == 2|| month == 4|| month == 6|| month == 9|| month == 11||){
+                        if(month == 2){
+                            target_date = {Febrary_date, 2, year};
+                            target_index = map->FindDateIndex(target_date, 0, map->size);
+                            map->days[target_index]<<Appending_transaction_input;
+                        }
+                        else{
+                            target_date = {smaller_month_date, month, year};
+                            target_index = map->FindDateIndex(target_date, 0, map->size);
+                            map->days[target_index]<<Appending_transaction_input;
+                        }
+                    }
+                    else{
+                        target_date = {date, month, year};
+                        target_index = map->FindDateIndex(target_date, 0, map->size);
+                        map->days[target_index]<<Appending_transaction_input;
+                    }
+                }           
+            }
+        }
+    }
+    else{
+        Date target_date;
+        int target_index;
+        for (int month = 1; month <13; month++)
+            target_date = {date, month, year};
+            target_index = map->FindDateIndex(target_date, 0, map->size);
+            map->days[target_index]<<Appending_transaction_input;
+    }
 }
 //function 7
 void end_of_today(int &today){
@@ -57,8 +157,6 @@ void function_procssing(bool &processing){
         else
                 processing = true;
 }
-
-//fucntion 3
 void editting_past_record(DaysDatabase map, int today){
         bool continue_edit_past_record = true;
         Date past;
@@ -117,9 +215,9 @@ void editting_past_record(DaysDatabase map, int today){
                     cout<<"Invalid date is input";
                 }
                 }
-}
+}                   
 
-//function 2
+
 void editting_today_record(DaysDatabse map, int today){
     bool continue_editting;
     int correction_location;
@@ -164,7 +262,6 @@ void editting_today_record(DaysDatabse map, int today){
         }
     }
 }
-////function appending past record
 void appending_past_record(DaysDatabase map, int today_index){
     bool continue_edit_past_record = true;
     Date past;
@@ -207,9 +304,6 @@ void appending_past_record(DaysDatabase map, int today_index){
         }
     }    
 }
-
-
-
 int main(){
         //start of initalizing stage
         Date input_date;
