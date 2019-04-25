@@ -8,6 +8,7 @@
 #include "variables.h"
 
 const int kMaxAmountLength = 10;
+const std::string kSortString[] = {"Account", "Category", "Amount"};
 
 /**
  * Holds a mult-condition enquiry
@@ -20,6 +21,8 @@ struct Enquiry{
     int category;
     int is_income;
     std::string search_string;
+    int sort_by; // -1 no sorting, 0 = account, 1 = category, 2 = amount
+    bool ascending;
     
     /*
     * Output the header of the enquiry
@@ -32,6 +35,8 @@ struct Enquiry{
         r += account == -1 ? "" : " by " + kAccountStrings[account];
         r += category == -1 ? "" : " of " + kCategoryStrings[category];
         r += search_string.empty() ? "" : " with remarks \"" + search_string + "\"";
+        r += sort_by == -1 ? "" : " sorted by " + kSortString[sort_by] + " in " +
+            (ascending ? "Ascend" : "Descend");
         return r;
     }
 };

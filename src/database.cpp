@@ -31,9 +31,25 @@ EnquiryResults& operator << (EnquiryResults& er, const EnquiryEntry& e){
     // Insert an entry to the end of the list, arranged by order of amount
     er.ExtendEntryDynamic();
     int index_insert = 0;
-    for (;index_insert < er.size-1;index_insert++){
-        if(er.results[index_insert].record->amount < e.record->amount)
-            break;
+    if (er.eq.sort_by == -1)
+        index_insert = er.size -1;
+    else if (er.eq.sort_by == 0){
+        for (;index_insert < er.size-1;index_insert++){
+            if( (er.results[index_insert].record->account < e.record->account) ^ er.eq.ascending)
+                break;
+        }
+    }
+    else if (er.eq.sort_by == 1){
+        for (;index_insert < er.size-1;index_insert++){
+            if((er.results[index_insert].record->category < e.record->category) ^ er.eq.ascending)
+                break;
+        }
+    }
+    else if (er.eq.sort_by == 2){
+        for (;index_insert < er.size-1;index_insert++){
+            if((er.results[index_insert].record->amount < e.record->amount) ^ er.eq.ascending)
+                break;
+        }
     }
     for(int i = er.size-1; i > index_insert; i--){
         er.results[i] = er.results[i-1];

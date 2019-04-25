@@ -82,7 +82,7 @@ int main(){
     fin >> dd;
     Date start = {1, 1, 2019};
     Date end = {1, 12, 2019};
-    Enquiry all = {start, end, -1, -1, -1, ""};
+    Enquiry all = {start, end, -1, -1, -1, "", -1, false};
     EnquiryResults er = dd.IquireFor(all);
     cout << er.Formatted() << endl;
     /**
