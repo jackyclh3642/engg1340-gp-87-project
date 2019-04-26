@@ -77,6 +77,7 @@ EnquiryResults& operator << (EnquiryResults& er, DayRecords& dr){
 }
 
 istream& operator >> (istream& is, DayRecords& dr){
+    // Read from a istream and save its entries to the DayRecords
     Entry er;
     is >> dr.date;
     int size;
@@ -89,6 +90,7 @@ istream& operator >> (istream& is, DayRecords& dr){
 }
 
 ostream& operator << (std::ostream& os, const DayRecords& dr){
+    // Output a DayRecords in a format that can be read (reseved) by >>
     os << dr.date << " " << dr.size << endl;
     for (int i = 0; i < dr.size; i++){
         os << dr.transactions[i] << endl;
@@ -97,6 +99,7 @@ ostream& operator << (std::ostream& os, const DayRecords& dr){
 }
 
 istream& operator >> (istream& is, DaysDatabase& dd){
+    // DaysDatabase equivalence for the above importing
     int year;
     is >> year;
     dd.InitDatabase(year);
@@ -107,6 +110,7 @@ istream& operator >> (istream& is, DaysDatabase& dd){
 }
 
 ostream& operator << (ostream& os, const DaysDatabase& dd){
+    // DaysDatabase equivalence for the above exporting
     os << dd.year << endl;
     for (int i = 0; i < dd.size; i++){
         os << dd.days[i];

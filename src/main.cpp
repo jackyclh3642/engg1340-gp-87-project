@@ -8,12 +8,19 @@
 
 using namespace std;
 
+/**
+ * A struct which holds the character that trigger the function, and the description
+ * when displayed 
+ */
 struct Command{
     char key;
     string desc;
 };
 
+// Display length
 const int kMaxCommandLength = 35;
+
+// Number of commands and the list of the commands
 const int kNumCommands = 12;
 const Command kCommandList[kNumCommands] = {{'a', "Add a new entry to today."}, {'e', "Edit an entry of today."},{'d', "Delete an entry of today."},
     {'n', "Proceed to next day."}, {'j', "Jump to a specific day."}, {'s', "Save the current database."},
@@ -21,16 +28,28 @@ const Command kCommandList[kNumCommands] = {{'a', "Add a new entry to today."}, 
     {'b', "Set up monthly budget"}, {'t',"Estimate your annual salary tax."}, {'q', "Save all and quit."}
 };
 
+// Save the previous saved place
 string default_location = "";
+
+// The whole database is saved globally in main.cpp
 DaysDatabase* db = new DaysDatabase;
+// The monthly budget is also saved globally in main.cpp
 double budget_per_month = -1;
 
+/**
+ * Print endl to emulate system(CLS)
+ */
 void ClearScreen(){
     for (int i = 0; i < 10; i++){
         cout << endl;
     }
 }
 
+/**
+ * Return a date after verifying the input
+ * If year == -1, also ask for the year
+ * If year is specified, just ask for day and month only
+ */
 Date InputDate(int year){
     Date d;
     while(true){
@@ -54,6 +73,9 @@ Date InputDate(int year){
     }
 }
 
+/**
+ * Print the all possible accounts in a table form
+ */
 void PrintAccounts(){
     cout << "List of Accounts:"<<endl;
     for (int i = 0; i < kMaxNumAccount; i++){
@@ -63,6 +85,9 @@ void PrintAccounts(){
     }
 }
 
+/**
+ * Ask for a valid account for entry
+ */
 int InputAccount(int old){
     cout << "Input the account infomration for the entry: ";
     if (old != -1)
@@ -79,6 +104,9 @@ int InputAccount(int old){
     }
 }
 
+/**
+ * Print the list of category in tabular form
+ */
 void PrintCategory(){
     cout << "List of Categorys: (1-3 are incomes, 4-11 are expenses)" << endl;
     for (int i = 0; i < kMaxNumCategory; i++){
@@ -88,6 +116,9 @@ void PrintCategory(){
     }
 }
 
+/**
+ *  Ask for a valid category index
+ */
 int InputCategory(int old){
     cout << "Input the category information for the entry: "; 
     if (old != -1)
@@ -104,6 +135,11 @@ int InputCategory(int old){
     }
 }
 
+/**
+ * The start of the program
+ * Ask the user to init a new yearbook
+ * or read from a file, init and read from the file and create DaysDatabase db
+ */
 int InitDatabaseForUser(){
     string input;
     Date d;
@@ -143,6 +179,9 @@ int InitDatabaseForUser(){
     }
 }
 
+/**
+ * Calculate the monthly expense based on today's month (found from index)
+ */
 float MonthsExpense(int i){
     Date today = (*db)[i].date;
     Date start = today;
@@ -156,6 +195,9 @@ float MonthsExpense(int i){
     return r;
 }
 
+/**
+ * Print today's record and command lists
+ */
 char TodayAndInstructions(int i){
 
     cout << (*db)[i].Formatted() << endl << endl;
@@ -194,6 +236,9 @@ char TodayAndInstructions(int i){
     return input;
 }
 
+/**
+ * Incremet the index of today to point as next day
+ */
 void ProceedDay(int& i){
     if (i < (db->size-1))
         i++;
@@ -201,6 +246,9 @@ void ProceedDay(int& i){
         cout << "Cannot proceed to next year, please init a new database for next year." << endl;
 }
 
+/**
+ * Input the amount for transaction, if given (show old also)
+ */
 float InputAmount(float old){
     cout << "Input the amount of the transaction, negative for expenses: ";
     if (old != 0)
@@ -211,6 +259,9 @@ float InputAmount(float old){
     return a;
 }
 
+/**
+ * Input a remarks for a transaction, if given old (show it also)
+ */
 string InputRemarks(string old){
     cout << "Input the remarks for this entry, with max length 30 characters: ";
     if (!old.empty())
@@ -225,6 +276,10 @@ string InputRemarks(string old){
     }
 }
 
+/**
+ * Add an entry after asking for all information with verification functions
+ * and insert it in today's DayRecords
+ */
 void AddEntry(int i){
     Entry e;
     e.account = InputAccount(-1);
@@ -238,6 +293,10 @@ void AddEntry(int i){
     (*db)[i] << e;
 }
 
+/**
+ * Enquire for todays and get all index and pointer
+ * Then use the index to find the Entry struct for editing
+ */
 void EditEntry(int i){
     Date d = (*db)[i].date;
     Enquiry eq = {d,d, -1, -1, -1, "", -1};
@@ -266,12 +325,18 @@ void EditEntry(int i){
     er.FreeMemory();
 }
 
+/**
+ * Jump to some date by changing today's index
+ */
 void JumpDay(int&i){
     Date d;
     d = InputDate(db->year);
     i = db->FindDateIndex(d, 0, db->size);
 }
 
+/**
+ * Save to the default location or ask the user to enter a new filename
+ */
 void SaveDB(){
     string input = "N";
     if (!default_location.empty()){
@@ -295,6 +360,10 @@ void SaveDB(){
     fou.close();
 }
 
+/**
+ * Enquire for today, get the pointer and use the function in DaysRecord of
+ * today to delete an shrink dynamic by the pointer
+ */
 void DeleteEntry(const int i){
     Date d = (*db)[i].date;
     Enquiry eq = {d,d, -1, -1, -1, "", -1};
@@ -314,6 +383,11 @@ void DeleteEntry(const int i){
     er.FreeMemory();
 }
 
+/**
+ * Set up automatic by asking the day, and if the day (e.g. 31) is valid in every months
+ * and ask to input a alternative day if needed
+ * All automatic record only get added after today's day
+ */
 void SetupAutomatic(int i){
     Date today = (*db)[i].date;
     cout << "At which day of the month would a recurring automatic entry (i.e. incomes or expenses) be set from " << today.Formatted() << "?" << endl;
@@ -352,6 +426,9 @@ void SetupAutomatic(int i){
     }
 }
 
+/**
+ * Utilize the advance enquiry function to its fullness and work as specific search for the user
+ */
 void AdvancedSearch(){
     cout << "Are you searching for a range of time (as oppose to filtering a single day)?  (Y or N)" << endl;
     char input;
@@ -451,6 +528,9 @@ void AdvancedSearch(){
     er.FreeMemory();
 }
 
+/**
+ * Adjust the global saved new monthly budget variable
+ */
 void SetupBudget(){
     cout << "What would be your new monthly budget? (0 or lower to unset budget) "<< "[";
     if (budget_per_month>0)
@@ -461,6 +541,9 @@ void SetupBudget(){
     cin >> budget_per_month;
 }
 
+/**
+ * Output this months total income, expenses and category percentage
+ */
 void MonthlyReport(int i){
     Date today = (*db)[i].date;
     Date start = today;
@@ -515,6 +598,9 @@ void MonthlyReport(int i){
     getline(cin, temp);
 }
 
+/**
+ * Ask for an input of a positive float number
+ */
 float InputPositiveFloat(){
     float input;
     while (true){
@@ -526,6 +612,9 @@ float InputPositiveFloat(){
     }
 }
 
+/**
+ * Ask for an input of a positive integer
+ */
 int InputPositiveInt(){
     int input;
     while (true){
@@ -537,10 +626,17 @@ int InputPositiveInt(){
     }
 }
 
+/**
+ *  Print the amount in the general format used by the system
+ */
 void PrintInFixedAmount(float i){
     cout << fixed << setw(kMaxAmountLength) << setprecision(2) << right << i;
 }
 
+/**
+ * Calculate tax based on total taxable amount
+ * Using 2018-2019 tax report
+ */
 float CalculateTax(float t){
     float tax;
     if (t <= 0)
@@ -561,6 +657,10 @@ float CalculateTax(float t){
     
 }
 
+/**
+ * Calculate personal tax based on Enquiry of this years total income
+ * and additional information asked for from the users
+ */
 void PersonalTax(){
     Date start = {1, 1, db->year};
     Date end = {31, 12, db->year};
@@ -630,6 +730,7 @@ void PersonalTax(){
 int main(){
     int today_index = InitDatabaseForUser();
     char input;
+    // The main input loop
     do{
         input = TodayAndInstructions(today_index);
         ClearScreen();
@@ -653,5 +754,3 @@ int main(){
     db->FreeDatabaseMemory();
     return 0;
 }
-
-

@@ -7,11 +7,14 @@
 #include "date.h"
 #include "variables.h"
 
+// The max width of a amount when printed in std::cout
 const int kMaxAmountLength = 15;
+// The corresponding string for sorting methods
 const std::string kSortString[] = {"Account", "Category", "Amount"};
 
 /**
  * Holds a mult-condition enquiry
+ * Its conditions would be tested by entry and DayRecords
  */
 struct Enquiry{
     Date start_date;
@@ -26,6 +29,8 @@ struct Enquiry{
     
     /*
     * Output the header of the enquiry
+    * Such as
+    * Enquiry for incomes from 01/01/2019 to 31/12/2019 by Cash
     */
     std::string Formatted(){
         std::string r = "Enquiry for";
@@ -43,6 +48,8 @@ struct Enquiry{
 
 /**
  * Hold the metadata of each singular entry
+ * Is the basic unit of record within this system
+ * Including accout, category, amount, remarks
  */
 struct Entry{
     int account;
@@ -51,7 +58,7 @@ struct Entry{
     std::string remarks;
     
     /**
-     * Check if the entry fit enquiry requirements
+     * Check if the entry fit an enquiry requirements
      */
      bool FitsEnquiry(Enquiry e){
         if (e.account != -1)
@@ -83,6 +90,7 @@ struct Entry{
      }
 };
 
+// Overide the operators for easy file I/O functions (save and load)
 std::istream& operator >> (std::istream& is, Entry& e);
 std::ostream& operator << (std::ostream& os, const Entry& e);
 
@@ -107,7 +115,7 @@ struct DayRecords{
     }
     
     /**
-     * Delete an entry by index
+     * Delete an entry by index within the transactions dynamic list
      */
     void DeleteByPointer(const Entry* e_ptr){
         Entry *temp = new Entry[--size];
@@ -143,10 +151,12 @@ struct DayRecords{
     };
 };
 
+// Insert a entry record to a day's record
 DayRecords& operator << (DayRecords& dr, const Entry& e);
 
 /*
-* Hold the metadata and the pointer to a entry which is a enquiry result
+* Hold the metadata and the pointer to a entry and where the entry is from
+* This is created when an enquiry found a hit result
 */
 struct EnquiryEntry{
     Date date;
@@ -154,7 +164,7 @@ struct EnquiryEntry{
     Entry* record;
     
     /**
-     * Include date in the output
+     * Include date in the output of presentation
      */
     std::string Formatted(){
         std::string r;
@@ -163,11 +173,13 @@ struct EnquiryEntry{
     }
 };
 
+// Define how to export and import a DayRecords (for save and load also)
 std::istream& operator >> (std::istream& is, DayRecords& dr);
 std::ostream& operator << (std::ostream& os, const DayRecords& dr);
 
 /*
-* Holds a dynamic list which gives the metadata and results for an enquiry
+* Holds a dynamic list which gives the metadata (what requirements are searched)
+* and results (what are found) for an enquiry
 */
 struct EnquiryResults{
     Enquiry eq;
@@ -221,33 +233,37 @@ struct EnquiryResults{
     }
     
     /**
-     * Return an entry by reference by index for editing
+     * Return an entry by reference by index for editing (shown in the UI)
      */
     Entry& operator[] (const int index){
         return *(results[index-1].record);
     }
     
     /**
-     * Delete a entry from corresponding DayRecords by index
+     * Delete a entry from corresponding DayRecords by index (shown in the UI)
      */
     void DeleteByIndex (const int index){
         results[index-1].day_records->DeleteByPointer(results[index-1].record);
     }
     
     /**
-     * Free memory used by an enquiry records
+     * Free memory used by an enquiry records, since it contains a dynamic list
      */
     void FreeMemory(){
         delete [] results;
     }
 };
 
+// Operators for initing the Enquiry, inserting a success record, filtering a DayRecords
 EnquiryResults& operator << (EnquiryResults& er, const EnquiryEntry& e);
 EnquiryResults& operator << (EnquiryResults& er, const Enquiry& e);
 EnquiryResults& operator << (EnquiryResults& er, DayRecords& dr);
 
 /**
  * Hold all days recorded within the system in a dynamic list also
+ * From 1/1 2/1 3/1 ... 31/12
+ * With year variable to see if it is leap year or not
+ * And each DaysDatabase only hold at most 1 year of records
  */
 struct DaysDatabase{
     DayRecords *days;
@@ -276,7 +292,8 @@ struct DaysDatabase{
     }
 
     /*
-    * Remove all memory used by the database
+    * Remove all memory used by the database, which is the days[] dyanmic itself, and
+    * each transactions dynamic list in each DayRecords (365, 366)
     */
     void FreeDatabaseMemory(){
     	// Remove the dynamic list under each days
@@ -308,10 +325,13 @@ struct DaysDatabase{
 	    return days[FindDateIndex(d, 0, size)];
 	}
 	
+	// Return a DayRecords when asking for a date in the database
 	DayRecords& operator[](const Date d){
 	    return days[FindDateIndex(d, 0, size)];
 	}
 	
+	// Return a DayRecords when asking for a known integer, faster than asking 
+	// for date, since, binary searches are not needed
 	DayRecords& operator [](const int i){
 	    return days[i];
 	}
@@ -330,6 +350,7 @@ struct DaysDatabase{
 	
 	/**
 	 * Return the latest index DayRecords with entrys
+	 * For used when loaded a old DayRecords
 	 */
     int GetLatestIndex(){
         int index = 0;
@@ -342,8 +363,9 @@ struct DaysDatabase{
     }
 };
 
+// These operators take care of real File/IO requirements, utilize all 
+// DaysRecord, Entry's << and >> operator
 std::istream& operator >> (std::istream& is, DaysDatabase& dd);
 std::ostream& operator << (std::ostream& os, const DaysDatabase& dd);
 
 #endif
-
