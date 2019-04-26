@@ -4,7 +4,7 @@
 
 To compile the program, type `make build` in the root directory (where the Makefile exists), intermediate object file will be stored in the `build` directory, a clean executable file named `engg1340-gp87-q4` will be compiled in the `bin` directory.
 
-A example saved database named `testcase 1.txt` is also included for testing the function, it can be loaded when starting the program and input the filename when prompted.
+Change directory to bin by `cd bin`, the program can be run by `./engg1340-gp87-q4`, an example saved database named `testcase 1.txt` is also included for testing the function, it can be loaded when starting the program and input the filename when prompted.
 
 The database is set up for testing all functionalities (i.e. report, tax, advance filtering and sorting)  included in the program, showing different alerts for budget from January to April, detailed instructions would be provided within the interface of the program.
 
