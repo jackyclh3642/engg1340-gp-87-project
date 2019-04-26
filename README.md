@@ -15,8 +15,13 @@ Hence:
 
 ## Problem functions
 
+### input/output specifications
+1.iomanip is used to print out the financial report, taxation report and daily transaction report more clearly
+1.iostream is used for basic I/O
+1.fstream is used for saving and loading the record
+1.database.h is used for custome operator(e.g. when using cin>> Entry it will input the account, cateogory, amouny and remark)
+1.date.h is used for custome operator(e.g.when using cin>> Date it will inout the date, month and year)
 ### Basic functions
-
 1. Add and removal of records of income and expenses;
 1. Basic information per each records (amount, date, types of income or expense and account);
 1. Allow the user to delete and edit records at any time;
@@ -24,12 +29,15 @@ Hence:
 1. Provide statistical report of user's financial state as summaries;
 1. Allow budget setting and alert for each types of income.
 
-
 ### Proposed extended functions
-
-1. Preliminary forcast of expense using previous months' data using linear regression;
-1. Export of the records to different format (ie. csv) to be analyzed and plotted in spreadsheet software;
 1. Allow setting of automatic records (ie salary, fixed expense);
-1. Alert for credit card/bill payment;
-1. Calculation of simple/compound interest stored in bank account.
-1. Help the user to calculate the tax he needs to pay.
+1. Allow the user to load and save the record
+1. Help the user to estimate the tax he needs to pay in that year.
+
+Code requirment
+1.dynamic memory management()
+1.File input/output
+1.Data manipulation
+1.multiple file 
+1.naming style
+1.In-code documentation
