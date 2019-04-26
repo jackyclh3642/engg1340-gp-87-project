@@ -37,7 +37,7 @@ Hence:
 
 ###Code requirment
 
-1. dynamic memory management() in Database, Entry transaction, DayRecords
+1. dynamic memory management() in Database, Entry transaction, DayRecords all memory are freed after end the programme 
 1. File input/output in Saving and loading 
 1. Data manipulation binary search is used in Day seraching; insertion sort is used for appending new days;
 1. multiple file database.h, date.h... is available 
