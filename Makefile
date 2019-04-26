@@ -6,15 +6,14 @@ build/database.o: src/database.cpp include/database.h include/date.h include/var
 build/date.o: src/date.cpp include/date.h
 	g++ $(OPTIONS) -c $< -o $@
 	
-build/debug.o: src/debug.cpp include/date.h
+build/main.o: src/main.cpp include/date.h
 	g++ $(OPTIONS) -c $< -o $@
 	
 build/variables.o: src/variables.cpp include/variables.h
 	g++ $(OPTIONS) -c $< -o $@
 	
-debug: build/debug.o build/date.o build/database.o build/variables.o
-	g++ $(OPTIONS) $^ -o build/debug.out
-	./build/debug.out
+build: build/main.o build/date.o build/database.o build/variables.o
+	g++ $(OPTIONS) $^ -o bin/engg1340-gp87-q4
 	
 clean:
 	rm -f build/*.o

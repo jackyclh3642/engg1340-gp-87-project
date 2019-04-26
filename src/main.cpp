@@ -14,10 +14,11 @@ struct Command{
 };
 
 const int kMaxCommandLength = 35;
-const int kNumCommands = 11;
+const int kNumCommands = 12;
 const Command kCommandList[kNumCommands] = {{'a', "Add a new entry to today."}, {'e', "Edit an entry of today."},{'d', "Delete an entry of today."},
     {'n', "Proceed to next day."}, {'j', "Jump to a specific day."}, {'s', "Save the current database."},
-    {'v', "Filter, sort and view entries."}, {'r', "View monthly statistical report."},{'u', "Set up monthly automatic entries."},{'b', "Set up monthly budget"}, {'q', "Save all and quit."}
+    {'v', "Filter, sort and view entries."}, {'r', "View monthly statistical report."},{'u', "Set up monthly automatic entries."},
+    {'b', "Set up monthly budget"}, {'t',"Estimate your annual salary tax."}, {'q', "Save all and quit."}
 };
 
 string default_location = "";
@@ -125,6 +126,7 @@ int InitDatabaseForUser(){
             ifstream fin;
             fin.open(input);
             if (fin.good()){
+                fin >> budget_per_month;
                 fin >> (*db);
                 int index = db->GetLatestIndex();
                 ClearScreen();
@@ -288,6 +290,7 @@ void SaveDB(){
     }
     ofstream fou;
     fou.open(default_location);
+    fou << budget_per_month << " ";
     fou << (*db);
     fou.close();
 }
@@ -512,6 +515,118 @@ void MonthlyReport(int i){
     getline(cin, temp);
 }
 
+float InputPositiveFloat(){
+    float input;
+    while (true){
+        cout << "> ";
+        cin >> input;
+        if (input >= 0)
+            return input;
+        cout << "Please enter a positive number." << endl;
+    }
+}
+
+int InputPositiveInt(){
+    int input;
+    while (true){
+        cout << "> ";
+        cin >> input;
+        if (input >= 0)
+            return input;
+        cout << "Please enter a positive integer." << endl;
+    }
+}
+
+void PrintInFixedAmount(float i){
+    cout << fixed << setw(kMaxAmountLength) << setprecision(2) << right << i;
+}
+
+float CalculateTax(float t){
+    float tax;
+    if (t <= 0)
+        return 0;
+    if (t <= 50000)
+        tax = t * 0.02;
+    else if (t <=100000)
+        tax = 1000 + (t-50000) * 0.06;
+    else if (t <= 150000)
+        tax = 4000 + (t- 100000) * 0.1;
+    else if (t <= 200000)
+        tax = 9000 + (t- 150000) * 0.14;
+    else
+        tax = 16000 + (t-200000) * 0.17;
+        
+    float stand = t * 0.15;
+    return stand < tax ? stand : tax;
+    
+}
+
+void PersonalTax(){
+    Date start = {1, 1, db->year};
+    Date end = {31, 12, db->year};
+    Enquiry eq = {start, end, -1, -1, 1, "", -1};
+    EnquiryResults er = db->IquireFor(eq);
+    float sum_income = er.Sum();
+    float residence;
+    float deduction;
+    float child;
+    float siblings;
+    float parents;
+    float other_allow;
+    er.FreeMemory();
+    
+    
+    cout << "Enter the value of any places of residence provided by your employter:" << endl;
+    residence = InputPositiveFloat();
+    cout << "Enter the value of deduction on the taxable incomes:" << endl;
+    deduction = -InputPositiveFloat();
+    
+    cout << "How many dependent children (born in this year) do you have that is eligible for child allowance?" << endl;
+    child = -240000 * InputPositiveInt();
+    
+    cout << "How many dependent children (born in other years) do you have that is eligible for child allowance?" << endl;
+    child += -120000 * InputPositiveInt();
+    
+    cout << "How many dependent siblings do you have that is eligible for dependent brother or dependent sister allowance?" << endl;
+    siblings = -37500 * InputPositiveInt();
+    
+    cout << "How many dependent parents (aged 55 to 59, and resided with you) do you have that is eligible for allowance?" << endl;
+    parents = -50000 * InputPositiveInt();
+    cout << "How many dependent parents (over 60, and resided with you) do you have that is eligible for allowance?" << endl;
+    parents -= 50000 * 2 * InputPositiveInt();
+    cout << "How many dependent parents (aged 55 to 59, and not resided with you) do you have that is eligible for allowance?" << endl;
+    parents -= 25000 * InputPositiveInt();
+    cout << "How many dependent parents (over 60, and not resided with you) do you have that is eligible for allowance?" << endl;
+    parents -= 25000 *2* InputPositiveInt();
+    
+    cout << "Enter the amount of other allowances you have during the year (e.g. basic allowance):" << endl;
+    other_allow -= InputPositiveFloat();
+    
+    ClearScreen();
+    
+    cout << "Report of the estimated tax in year " << db->year << endl << endl;
+    
+    float taxable_amount = sum_income + residence + deduction + child + siblings + parents + other_allow;
+    
+    cout << setw(kCategoryLength) << "Total Incomes" << " | "; PrintInFixedAmount(sum_income); cout << endl;
+    cout << setw(kCategoryLength) << "Residence" << " | "; PrintInFixedAmount(residence); cout << endl;
+    cout << setw(kCategoryLength) << "Total Deductions" << " | "; PrintInFixedAmount(deduction); cout << endl;
+    cout << setw(kCategoryLength) << "Child Allowance" << " | "; PrintInFixedAmount(child); cout << endl;
+    cout << setw(kCategoryLength) << "Sibling Allowance" << " | "; PrintInFixedAmount(siblings); cout << endl;
+    cout << setw(kCategoryLength) << "Parents Allowance" << " | "; PrintInFixedAmount(parents); cout << endl;
+    cout << setw(kCategoryLength) << "Other Allowance" << " | "; PrintInFixedAmount(other_allow); cout << endl;
+    cout << "---------------------+-----------------" << endl;
+    cout << setw(kCategoryLength) << "Taxable Amount" << " | "; PrintInFixedAmount(taxable_amount); cout << endl << endl;
+    
+    cout << setw(kCategoryLength) << "Estimated Tax:" << "   "; PrintInFixedAmount(CalculateTax(taxable_amount)); cout << endl << endl;
+    
+    cout << "Press 'Enter' to quit this enquiry." << endl;
+    cin.ignore(1);
+    string temp;
+    getline(cin, temp);
+    
+}
+
 int main(){
     int today_index = InitDatabaseForUser();
     char input;
@@ -530,6 +645,7 @@ int main(){
             case 'v': AdvancedSearch();break;
             case 'b': SetupBudget();break;
             case 'r': MonthlyReport(today_index);break;
+            case 't': PersonalTax();break;
         }
         ClearScreen();
     } while (input != 'q');
