@@ -18,5 +18,6 @@ build: build/main.o build/date.o build/database.o build/variables.o
 clean:
 	rm -f build/*.o
 	rm -f build/*.out
+	rm -f bin/engg1340-gp87-q4
 	
 .PHONY: clean

@@ -121,7 +121,7 @@ struct DayRecords{
         Entry *temp = new Entry[--size];
         int offset = 0;
         for (int i = 0; i < size; i++){
-            if (&temp[i] == e_ptr)
+            if (&transactions[i] == e_ptr)
                 offset++;
             temp[i] = transactions[i+offset];
         }
